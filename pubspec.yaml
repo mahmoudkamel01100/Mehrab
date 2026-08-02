@@ -28,6 +28,7 @@ dependencies:
   http: ^1.1.0
   url_launcher: ^6.1.11
   youtube_player_flutter: ^8.1.2
+  flutter_inappwebview: ^6.1.5
 
   # Local Cache (for Electronic Rosary / Tasbih counts)
   shared_preferences: ^2.2.0
