@@ -15,7 +15,7 @@ dependencies:
 
   # Icons and Design
   cupertino_icons: ^1.0.5
-  font_awesome_flutter: ^10.4.0
+  font_awesome_flutter: ^11.0.0
   google_fonts: ^6.1.0
 
   # State Management
