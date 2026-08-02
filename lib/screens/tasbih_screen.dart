@@ -57,6 +57,8 @@ class _TasbihScreenState extends State<TasbihScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('السبحة الإلكترونية', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -67,10 +69,12 @@ class _TasbihScreenState extends State<TasbihScreen> {
         children: [
           // Background Gradient
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.center,
-                colors: [Color(0xFF0E5C41), Color(0xFF051E15)],
+                colors: isDark
+                    ? const [Color(0xFF0E5C41), Color(0xFF051E15)]
+                    : const [Color(0xFFEBF2EE), Color(0xFFD6E2DB)],
                 radius: 1.2,
               ),
             ),
@@ -87,9 +91,18 @@ class _TasbihScreenState extends State<TasbihScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF166E4F),
-                    border: Border.all(color: Colors.white12),
+                    color: isDark ? const Color(0xFF166E4F) : Colors.white,
+                    border: Border.all(color: isDark ? Colors.white12 : Colors.black.withOpacity(0.04)),
                     borderRadius: BorderRadius.circular(14),
+                    boxShadow: isDark
+                        ? null
+                        : [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.03),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            )
+                          ],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,12 +110,16 @@ class _TasbihScreenState extends State<TasbihScreen> {
                       Expanded(
                         child: Text(
                           _currentPhrase,
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: isDark ? Colors.white : const Color(0xFF0B4C35),
+                          ),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       PopupMenuButton<Map<String, String>>(
-                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                        icon: Icon(Icons.keyboard_arrow_down, color: isDark ? Colors.white : const Color(0xFF0B4C35)),
                         onSelected: (Map<String, String> phrase) {
                           setState(() {
                             _currentPhrase = phrase['text']!;
@@ -185,9 +202,18 @@ class _TasbihScreenState extends State<TasbihScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.05),
-                        border: Border.all(color: Colors.white.withOpacity(0.08)),
+                        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+                        border: Border.all(color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04)),
                         borderRadius: BorderRadius.circular(16),
+                        boxShadow: isDark
+                            ? null
+                            : [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.03),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 3),
+                                )
+                              ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

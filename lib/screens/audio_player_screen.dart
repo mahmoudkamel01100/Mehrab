@@ -106,11 +106,6 @@ class AudioPlayerScreen extends StatelessWidget {
                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'القرآن الكريم كامل ومحاضرات دينية',
-                            style: TextStyle(fontSize: 11, color: Color(0xFFA3C8BC), fontWeight: FontWeight.bold),
-                          ),
                         ],
                       ),
                       

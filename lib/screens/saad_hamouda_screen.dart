@@ -75,10 +75,12 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
         children: [
           // Background Gradient
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.center,
-                colors: [Color(0xFF0E5C41), Color(0xFF051E15)],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? const [Color(0xFF0E5C41), Color(0xFF051E15)]
+                    : const [Color(0xFFEBF2EE), Color(0xFFD6E2DB)],
                 radius: 1.2,
               ),
             ),
@@ -132,15 +134,27 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
 
   Widget _buildCategoryCard(
       String title, String subtitle, IconData icon, VoidCallback onTap) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.04),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          color: isDark ? Colors.white.withOpacity(0.04) : Colors.white,
+          border: Border.all(
+            color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04),
+          ),
           borderRadius: BorderRadius.circular(20),
+          boxShadow: isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  )
+                ],
         ),
         child: Row(
           children: [
@@ -159,7 +173,7 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
                     style: GoogleFonts.cairo(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
-                      color: Colors.white,
+                      color: isDark ? Colors.white : const Color(0xFF0B4C35),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -167,13 +181,13 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
                     subtitle,
                     style: GoogleFonts.cairo(
                       fontSize: 11,
-                      color: const Color(0xFFA3C8BC),
+                      color: isDark ? const Color(0xFFA3C8BC) : const Color(0xFF5A7A6E),
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white30, size: 18),
+            Icon(Icons.arrow_forward_ios, color: isDark ? Colors.white30 : const Color(0xFF0B4C35).withOpacity(0.4), size: 18),
           ],
         ),
       ),
@@ -240,13 +254,14 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
                     final item = filteredItems[index];
                     final String title = item['title'] ?? '';
                     final bool isVideo = _activeCategory != 'saad_5otab';
+                    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
                     return Card(
-                      color: Colors.white.withOpacity(0.03),
+                      color: isDark ? Colors.white.withOpacity(0.03) : Colors.white,
                       margin: const EdgeInsets.only(bottom: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
-                        side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                        side: BorderSide(color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.04)),
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -264,7 +279,7 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
                           style: GoogleFonts.cairo(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: isDark ? Colors.white : const Color(0xFF0B4C35),
                           ),
                         ),
                         trailing: Icon(

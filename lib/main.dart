@@ -20,7 +20,7 @@ import 'services/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.init();
-  await NotificationService.schedulePrayerNotifications();
+  NotificationService.schedulePrayerNotifications();
   AirtableService.fetchAirtableRecords();
   runApp(
     MultiProvider(

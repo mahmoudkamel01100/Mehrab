@@ -44,23 +44,46 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               child: Image.asset(
                 'images/MehrabLogo.png',
-                width: 32,
-                height: 32,
+                width: 28,
+                height: 28,
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(width: 8),
-            const Text('مِحرَاب الحَوامدية', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(width: 6),
+            const Text(
+              'مِحرَاب الحَوامدية',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
           ],
         ),
         actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    _hijriDate,
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    _gregorianDate,
+                    style: const TextStyle(fontSize: 8, color: Color(0xFFA3C8BC)),
+                  ),
+                ],
+              ),
+            ),
+          ),
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
+            icon: const Icon(Icons.settings, color: Colors.white, size: 22),
             onPressed: () {
               Navigator.push(
                 context,
@@ -68,17 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(_hijriDate, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                Text(_gregorianDate, style: const TextStyle(fontSize: 10, color: Color(0xFFA3C8BC))),
-              ],
-            ),
-          )
         ],
         backgroundColor: const Color(0xFF0B4C35),
         elevation: 0,
@@ -87,10 +99,12 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           // Background Gradient
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.center,
-                colors: [Color(0xFF0E5C41), Color(0xFF051E15)],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? const [Color(0xFF0E5C41), Color(0xFF051E15)]
+                    : const [Color(0xFFEBF2EE), Color(0xFFD6E2DB)],
                 radius: 1.2,
               ),
             ),
@@ -133,16 +147,17 @@ class _HomeScreenState extends State<HomeScreen> {
     // Highlight next upcoming prayer
     final nextPrayer = _prayerTimes.nextPrayer();
     final isNone = nextPrayer == Prayer.none;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: const Color(0xFF103A2B).withOpacity(0.8),
+        color: isDark ? const Color(0xFF103A2B).withOpacity(0.8) : Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.2)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 15,
             offset: const Offset(0, 5),
           )
@@ -152,12 +167,16 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'مواقيت الصلاة (الحوامدية)',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: isDark ? Colors.white : const Color(0xFF0B4C35),
+                ),
               ),
-              ContainerBadge(text: 'أوفلاين', color: Colors.green),
+              const ContainerBadge(text: 'أوفلاين', color: Colors.green),
             ],
           ),
           const SizedBox(height: 16),
@@ -184,19 +203,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildPrayerCard(String name, DateTime time, bool isActive) {
     final timeStr = intl.DateFormat('h:mm a', 'ar_EG').format(time);
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
         gradient: isActive
             ? LinearGradient(
-                colors: [const Color(0xFFD4AF37).withOpacity(0.2), const Color(0xFF0B4C35).withOpacity(0.3)],
+                colors: [const Color(0xFFD4AF37).withOpacity(0.2), const Color(0xFF0B4C35).withOpacity(isDark ? 0.3 : 0.1)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               )
             : null,
-        color: isActive ? null : Colors.white.withOpacity(0.04),
+        color: isActive ? null : (isDark ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.03)),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isActive ? const Color(0xFFD4AF37) : Colors.white.withOpacity(0.06),
+          color: isActive ? const Color(0xFFD4AF37) : (isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.05)),
           width: isActive ? 1.5 : 1.0,
         ),
       ),
@@ -208,7 +228,9 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
-              color: isActive ? const Color(0xFFD4AF37) : const Color(0xFFA3C8BC),
+              color: isActive
+                  ? const Color(0xFFD4AF37)
+                  : (isDark ? const Color(0xFFA3C8BC) : const Color(0xFF5A7A6E)),
             ),
           ),
           const SizedBox(height: 4),
@@ -217,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w800,
-              color: isActive ? Colors.white : Colors.white.withOpacity(0.9),
+              color: isActive ? (isDark ? Colors.white : const Color(0xFFD4AF37)) : (isDark ? Colors.white : const Color(0xFF0B4C35)),
             ),
           ),
         ],
@@ -288,13 +310,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildNavGridItem(String title, IconData icon, Color color, VoidCallback onTap) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          border: Border.all(color: Colors.white.withOpacity(0.08)),
+          color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+          border: Border.all(
+            color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04),
+          ),
           borderRadius: BorderRadius.circular(20),
+          boxShadow: isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  )
+                ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -311,7 +345,11 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 8),
             Text(
               title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: isDark ? Colors.white : const Color(0xFF0B4C35),
+              ),
             ),
           ],
         ),

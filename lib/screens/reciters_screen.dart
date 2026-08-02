@@ -93,7 +93,7 @@ class _RecitersScreenState extends State<RecitersScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('القراء والدروس', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('القراء', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF0B4C35),
         elevation: 0,
       ),
@@ -101,10 +101,12 @@ class _RecitersScreenState extends State<RecitersScreen> {
         children: [
           // Background
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.center,
-                colors: [Color(0xFF0E5C41), Color(0xFF051E15)],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? const [Color(0xFF0E5C41), Color(0xFF051E15)]
+                    : const [Color(0xFFEBF2EE), Color(0xFFD6E2DB)],
                 radius: 1.2,
               ),
             ),
@@ -148,8 +150,10 @@ class _RecitersScreenState extends State<RecitersScreen> {
                       onTap: () => _showSurahSelector(reciter),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.04),
-                          border: Border.all(color: Colors.white.withOpacity(0.06)),
+                          color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.04) : Colors.white,
+                          border: Border.all(
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                          ),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
@@ -167,7 +171,11 @@ class _RecitersScreenState extends State<RecitersScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text(
                                 reciter['name']!,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11,
+                                  color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0B4C35),
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             )

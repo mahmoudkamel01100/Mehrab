@@ -65,10 +65,12 @@ class _AzkarScreenState extends State<AzkarScreen> {
         children: [
           // Background Gradient
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.center,
-                colors: [Color(0xFF0E5C41), Color(0xFF051E15)],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? const [Color(0xFF0E5C41), Color(0xFF051E15)]
+                    : const [Color(0xFFEBF2EE), Color(0xFFD6E2DB)],
                 radius: 1.2,
               ),
             ),
@@ -171,9 +173,20 @@ class _AzkarScreenState extends State<AzkarScreen> {
                           margin: const EdgeInsets.only(bottom: 12),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.04),
-                            border: Border.all(color: Colors.white.withOpacity(0.06)),
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.04) : Colors.white,
+                            border: Border.all(
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                            ),
                             borderRadius: BorderRadius.circular(18),
+                            boxShadow: Theme.of(context).brightness == Brightness.dark
+                                ? null
+                                : [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.03),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 3),
+                                    )
+                                  ],
                           ),
                           child: Row(
                             children: [

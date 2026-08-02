@@ -23,6 +23,7 @@ dependencies:
 
   # Offline Prayer Times Calculations
   adhan: ^2.0.0+1
+  hijri: ^3.0.0
   intl: ^0.20.2
 
   # Audio Streaming and Playback
@@ -49,6 +50,7 @@ flutter:
   # Assets definition for local files (images/icons if needed)
   assets:
     - images/
+    - images/quran_text.json
 
   fonts:
     - family: UthmanicHafs
