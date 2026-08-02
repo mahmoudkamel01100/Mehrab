@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'quran_reader_screen.dart';
 
 class QuranScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _QuranScreenState extends State<QuranScreen> {
   List<dynamic> _allSurahs = [];
   List<dynamic> _filteredSurahs = [];
   bool _isLoading = true;
+  String? _errorMessage;
   final TextEditingController _searchController = TextEditingController();
 
   String? _lastReadSurahName;
@@ -78,16 +80,18 @@ class _QuranScreenState extends State<QuranScreen> {
 
   Future<void> _loadQuranText() async {
     try {
-      final String jsonStr = await DefaultAssetBundle.of(context).loadString('images/quran_text.json');
+      final String jsonStr = await rootBundle.loadString('images/quran_text.json', cache: false);
       final List<dynamic> data = json.decode(jsonStr);
       setState(() {
         _allSurahs = data;
         _filteredSurahs = data;
         _isLoading = false;
+        _errorMessage = null;
       });
     } catch (e) {
       print('Error loading Quran text: $e');
       setState(() {
+        _errorMessage = e.toString();
         _isLoading = false;
       });
     }
@@ -178,8 +182,25 @@ class _QuranScreenState extends State<QuranScreen> {
                 
                 // Surahs List
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: _filteredSurahs.length,
+                  child: _filteredSurahs.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Text(
+                              _errorMessage != null
+                                  ? 'فشل تحميل المصحف المكتوب:\n$_errorMessage'
+                                  : 'لا توجد نتائج بحث مطابقة',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.cairo(
+                                color: isDark ? Colors.white70 : const Color(0xFF0B4C35),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: _filteredSurahs.length,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemBuilder: (context, index) {
                       final surah = _filteredSurahs[index];

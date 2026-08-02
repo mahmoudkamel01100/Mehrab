@@ -50,7 +50,6 @@ flutter:
   # Assets definition for local files (images/icons if needed)
   assets:
     - images/
-    - images/quran_text.json
 
   fonts:
     - family: UthmanicHafs

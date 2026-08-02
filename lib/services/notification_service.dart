@@ -132,16 +132,34 @@ class NotificationService {
           iOS: iosDetails,
         );
         
-        await _localNotifications.zonedSchedule(
-          notificationId,
-          'حان الآن موعد أذان $prayerName',
-          'صلاة $prayerName في مدينة الحوامدية وضواحيها',
-          tz.TZDateTime.from(time, tz.local),
-          details,
-          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
-        );
+        try {
+          await _localNotifications.zonedSchedule(
+            notificationId,
+            'حان الآن موعد أذان $prayerName',
+            'صلاة $prayerName في مدينة الحوامدية وضواحيها',
+            tz.TZDateTime.from(time, tz.local),
+            details,
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            uiLocalNotificationDateInterpretation:
+                UILocalNotificationDateInterpretation.absoluteTime,
+          );
+        } catch (e) {
+          print('Failed to schedule exact notification: $e');
+          try {
+            await _localNotifications.zonedSchedule(
+              notificationId,
+              'حان الآن موعد أذان $prayerName',
+              'صلاة $prayerName في مدينة الحوامدية وضواحيها',
+              tz.TZDateTime.from(time, tz.local),
+              details,
+              androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+              uiLocalNotificationDateInterpretation:
+                  UILocalNotificationDateInterpretation.absoluteTime,
+            );
+          } catch (err) {
+            print('Failed to schedule inexact notification: $err');
+          }
+        }
       }
     }
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
@@ -28,6 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   late PrayerTimes _prayerTimes;
   late String _hijriDate;
   late String _gregorianDate;
+  
+  Timer? _countdownTimer;
+  String _nextPrayerCountdown = '';
+  String _nextPrayerName = '';
 
   @override
   void initState() {
@@ -37,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
     
     // Formatting Gregorian Date in Arabic
     _gregorianDate = intl.DateFormat('EEEE، d MMMM yyyy', 'ar_EG').format(DateTime.now());
+    
+    _startCountdown();
   }
 
   @override
@@ -179,6 +186,41 @@ class _HomeScreenState extends State<HomeScreen> {
               const ContainerBadge(text: 'أوفلاين', color: Colors.green),
             ],
           ),
+          if (_nextPrayerName.isNotEmpty && _nextPrayerCountdown.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFD4AF37).withOpacity(0.12),
+                border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.35)),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.timer_outlined, color: Color(0xFFD4AF37), size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    'متبقي على أذان $_nextPrayerName: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 11,
+                      color: isDark ? Colors.white70 : const Color(0xFF0B4C35),
+                    ),
+                  ),
+                  Text(
+                    _nextPrayerCountdown,
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                      color: Color(0xFFD4AF37),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           GridView.count(
             crossAxisCount: 3,
@@ -449,5 +491,86 @@ class MiniPlayerWidget extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _startCountdown() {
+    _countdownTimer?.cancel();
+    _updateCountdown(); // Run immediately on start
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateCountdown();
+    });
+  }
+
+  void _updateCountdown() {
+    final now = DateTime.now();
+    final prayerTimes = PrayerTimesService.calculatePrayerTimes();
+    final nextPrayer = prayerTimes.nextPrayer();
+    
+    if (nextPrayer == Prayer.none) {
+      if (mounted) {
+        setState(() {
+          _nextPrayerCountdown = '';
+          _nextPrayerName = '';
+        });
+      }
+      return;
+    }
+    
+    DateTime nextPrayerTime;
+    String prayerNameAr = '';
+    
+    switch (nextPrayer) {
+      case Prayer.fajr:
+        nextPrayerTime = prayerTimes.fajr;
+        prayerNameAr = 'الفجر';
+        break;
+      case Prayer.sunrise:
+        nextPrayerTime = prayerTimes.sunrise;
+        prayerNameAr = 'الشروق';
+        break;
+      case Prayer.dhuhr:
+        nextPrayerTime = prayerTimes.dhuhr;
+        prayerNameAr = 'الظهر';
+        break;
+      case Prayer.asr:
+        nextPrayerTime = prayerTimes.asr;
+        prayerNameAr = 'العصر';
+        break;
+      case Prayer.maghrib:
+        nextPrayerTime = prayerTimes.maghrib;
+        prayerNameAr = 'المغرب';
+        break;
+      case Prayer.isha:
+        nextPrayerTime = prayerTimes.isha;
+        prayerNameAr = 'العشاء';
+        break;
+      default:
+        nextPrayerTime = now;
+    }
+    
+    // Ensure if calculated time is slightly behind 'now' due to millisecond delays, it handles it safely
+    if (nextPrayerTime.isBefore(now)) {
+      nextPrayerTime = nextPrayerTime.add(const Duration(days: 1));
+    }
+    
+    final difference = nextPrayerTime.difference(now);
+    
+    final hours = difference.inHours.toString().padLeft(2, '0');
+    final minutes = (difference.inMinutes % 60).toString().padLeft(2, '0');
+    final seconds = (difference.inSeconds % 60).toString().padLeft(2, '0');
+    
+    if (mounted) {
+      setState(() {
+        _nextPrayerName = prayerNameAr;
+        _nextPrayerCountdown = '$hours:$minutes:$seconds';
+        _prayerTimes = prayerTimes;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _countdownTimer?.cancel();
+    super.dispose();
   }
 }
