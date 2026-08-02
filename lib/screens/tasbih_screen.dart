@@ -92,7 +92,7 @@ class _TasbihScreenState extends State<TasbihScreen> {
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.between,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
                         child: Text(

@@ -13,7 +13,7 @@ class HijriHelper {
 
     int a = (gYear / 100).floor();
     int b = (a / 4).floor();
-    double c = 2 - a + b;
+    double c = (2 - a + b).toDouble();
     double e = (365.25 * (gYear + 4716)).floorToDouble();
     double f = (30.6001 * (gMonth + 1)).floorToDouble();
     double jd = c + gDay + e + f - 1524.5;

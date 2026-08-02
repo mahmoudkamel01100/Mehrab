@@ -67,6 +67,11 @@ class AudioProvider extends ChangeNotifier {
     }
   }
 
+  /// Pauses the audio playback
+  void pause() {
+    _audioPlayer.pause();
+  }
+
   /// Seeks to a specific position in the track
   void seek(Duration position) {
     _audioPlayer.seek(position);

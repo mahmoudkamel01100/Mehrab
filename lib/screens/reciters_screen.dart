@@ -168,7 +168,7 @@ class _RecitersScreenState extends State<RecitersScreen> {
                               child: Text(
                                 reciter['name']!,
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
-                                textAlign: Center,
+                                textAlign: TextAlign.center,
                               ),
                             )
                           ],
@@ -247,7 +247,7 @@ class _RecitersScreenState extends State<RecitersScreen> {
             children: [
               // Bottomsheet Header
               Row(
-                mainAxisAlignment: MainAxisAlignment.between,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     reciter['name']!,
