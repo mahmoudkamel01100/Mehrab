@@ -1,0 +1,54 @@
+name: mehrab_al_hawamdya
+description: "تطبيق محراب الحوامدية - تطبيق إسلامي متكامل لأهالي وقراء الحوامدية"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Icons and Design
+  cupertino_icons: ^1.0.5
+  font_awesome_flutter: ^10.4.0
+  google_fonts: ^5.1.0
+
+  # State Management
+  provider: ^6.0.5
+
+  # Offline Prayer Times Calculations
+  adhan: ^2.0.0+1
+  intl: ^0.18.1
+
+  # Audio Streaming and Playback
+  just_audio: ^0.9.34
+  http: ^1.1.0
+  url_launcher: ^6.1.11
+  youtube_player_flutter: ^8.1.2
+
+  # Local Cache (for Electronic Rosary / Tasbih counts)
+  shared_preferences: ^2.2.0
+
+  # Local Notification and Background Service
+  flutter_local_notifications: ^16.1.0
+  timezone: ^0.9.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+flutter:
+  uses-material-design: true
+  
+  # Assets definition for local files (images/icons if needed)
+  assets:
+    - images/
+
+  fonts:
+    - family: UthmanicHafs
+      fonts:
+        - asset: fonts/UthmanicHafs.otf

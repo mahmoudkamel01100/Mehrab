@@ -1,0 +1,2057 @@
+@font-face {
+    font-family: 'UthmanicHafs';
+    src: url('fonts/UthmanicHafs.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Core Styles & Theme Configuration */
+:root {
+    --primary-color: #0b4c35;       /* Deep Islamic Green */
+    --primary-light: #166e4f;      /* Light Emerald Green */
+    --secondary-color: #d4af37;     /* Gold Accent */
+    --gold-light: rgba(212, 175, 55, 0.15);
+    --gold-hover: #b8972e;
+    --dark-bg: #072a1e;             /* Midnight Islamic Green */
+    --card-bg: rgba(255, 255, 255, 0.08); /* Glassmorphism background */
+    --card-border: rgba(255, 255, 255, 0.1);
+    --text-color: #ffffff;
+    --text-muted: #a3c8bc;
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --green-light-badge: rgba(22, 110, 79, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+    user-select: none;
+}
+
+body {
+    background: radial-gradient(circle at center, #0e5c41 0%, #051e15 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+/* Phone Simulator Container */
+.phone-wrapper {
+    width: 100%;
+    max-width: 412px;
+    height: 90vh;
+    max-height: 850px;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    border-radius: 40px;
+    border: 8px solid #1a2c25;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure mobile screens behave normally */
+@media (max-width: 480px) {
+    body {
+        background: var(--dark-bg);
+    }
+    .phone-wrapper {
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+    }
+}
+
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header Styles */
+.app-header {
+    background: linear-gradient(to bottom, #0b4c35 0%, #072a1e 100%);
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.app-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.header-logo-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid rgba(214, 175, 55, 0.4);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+.gold-text {
+    color: var(--secondary-color);
+    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+}
+
+.red-text {
+    color: #ff3333;
+}
+
+.header-date {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sub-date {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+}
+
+/* Scrollable Content Container */
+.app-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    position: relative;
+    scrollbar-width: none; /* Hide standard Firefox scrollbar */
+}
+
+.app-content::-webkit-scrollbar {
+    display: none; /* Hide Chrome/Safari scrollbar */
+}
+
+/* Common Card Style (Glassmorphism) */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.card:active {
+    transform: scale(0.98);
+}
+
+/* Navigation View Switching */
+.app-view {
+    display: none;
+    animation: fadeIn 0.4s ease-out forwards;
+    position: relative;
+    min-height: 100%;
+}
+
+.app-view.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* PRAYER WIDGET STYLES */
+.prayer-widget {
+    background: linear-gradient(135deg, rgba(11, 76, 53, 0.8) 0%, rgba(7, 42, 30, 0.8) 100%);
+    border: 1px solid rgba(214, 175, 55, 0.2);
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.offline-badge {
+    background-color: rgba(212, 175, 55, 0.12);
+    color: var(--secondary-color);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.prayer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.prayer-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.prayer-card.active {
+    background: linear-gradient(135deg, rgba(214, 175, 55, 0.2) 0%, rgba(11, 76, 53, 0.3) 100%);
+    border: 1.5px solid var(--secondary-color);
+    box-shadow: 0 0 10px rgba(214, 175, 55, 0.3);
+}
+
+.prayer-card .name {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.prayer-card.active .name {
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+.prayer-card .time {
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+/* Links & Promotional Button */
+.links-row {
+    display: flex;
+    gap: 10px;
+}
+
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    color: white;
+    font-size: 0.85rem;
+}
+
+.facebook-btn {
+    background: rgba(24, 119, 242, 0.15);
+    border: 1px solid rgba(24, 119, 242, 0.4);
+}
+
+.facebook-btn i {
+    color: #1877f2;
+    font-size: 1.3rem;
+}
+
+.video-promo {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.video-promo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.video-promo i {
+    font-size: 1.3rem;
+}
+
+/* Home Quick Grid Navigation */
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 120px;
+    cursor: pointer;
+}
+
+.grid-item:active {
+    transform: scale(0.96);
+}
+
+.icon-wrap {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.bg-green-light { background-color: rgba(76, 217, 100, 0.15); color: #4cd964; }
+.bg-gold-light { background-color: rgba(214, 175, 55, 0.15); color: var(--secondary-color); }
+.bg-blue-light { background-color: rgba(90, 200, 250, 0.15); color: #5ac8fa; }
+.bg-red-light { background-color: rgba(255, 45, 85, 0.15); color: #ff2d55; }
+
+.grid-item .title {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* RECITERS SECTION STYLES */
+.category-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scrollbar-width: none;
+}
+
+.category-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: var(--primary-light);
+    color: white;
+    border-color: var(--primary-light);
+    box-shadow: 0 4px 10px rgba(22, 110, 79, 0.4);
+}
+
+/* Reciter Card Layout */
+.reciters-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding-bottom: 60px; /* Space for player */
+}
+
+.reciter-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.reciter-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-light);
+    object-fit: cover;
+    background-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.reciter-info-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* Surah Selector Panel / Bottom Sheet Overlay */
+.surah-selector-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 75%;
+    background: #093b2a;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-top: 2px solid var(--secondary-color);
+    z-index: 100;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.surah-selector-panel.active {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.panel-header h3 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+}
+
+.close-panel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.surah-search {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 8px 12px;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.surah-search i {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.surah-search input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.85rem;
+}
+
+.surah-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 20px;
+}
+
+.surah-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.surah-item:active {
+    background-color: var(--primary-light);
+}
+
+.surah-title-right {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.surah-index {
+    color: var(--secondary-color);
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: rgba(214, 175, 55, 0.1);
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+}
+
+.play-icon-left {
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+}
+
+/* AZKAR SECTION STYLES */
+.azkar-header-tabs {
+    display: flex;
+    margin-bottom: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 25px;
+    padding: 4px;
+}
+
+.azkar-tabactive {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 10px 0;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.azkar-tabactive.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.azkar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 60px;
+}
+
+.zekr-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 16px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.zekr-card.done {
+    opacity: 0.4;
+    border-color: rgba(255,255,255,0.03);
+}
+
+.zekr-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.zekr-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    font-weight: 600;
+}
+
+.zekr-benefit {
+    font-size: 0.7rem;
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+.zekr-counter-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--secondary-color);
+    color: var(--dark-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+    transition: background-color 0.2s;
+}
+
+.zekr-card.done .zekr-counter-btn {
+    background: #555;
+    color: #bbb;
+}
+
+/* TASBIH SECTION STYLES */
+.tasbih-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    position: relative;
+}
+
+.tasbih-selector {
+    background: var(--primary-light);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    color: white;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    cursor: pointer;
+}
+
+.tasbih-dropdown {
+    display: none;
+    position: absolute;
+    top: 66px;
+    left: 24px;
+    right: 24px;
+    background: #093b2a;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    z-index: 50;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.tasbih-dropdown div {
+    padding: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+}
+
+.tasbih-dropdown div:hover {
+    background: var(--primary-light);
+}
+
+.tasbih-benefit {
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+    text-align: center;
+    margin: 15px 0;
+    min-height: 40px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.tasbih-circle {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-light) 0%, var(--primary-color) 100%);
+    border: 8px solid var(--secondary-color);
+    box-shadow: 0 0 20px rgba(214, 175, 55, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+    margin-bottom: 24px;
+}
+
+.tasbih-circle:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 10px rgba(214, 175, 55, 0.2);
+}
+
+#tasbih-counter {
+    font-size: 3rem;
+    font-weight: 800;
+    color: white;
+}
+
+.click-instruction {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.tasbih-controls {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.reset-btn {
+    border: 1px solid var(--card-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 24px !important;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.reset-btn i {
+    color: var(--secondary-color);
+}
+
+/* FULL SCREEN AUDIO PLAYER */
+.player-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #0e5c41 0%, #051e15 100%);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.player-overlay.active {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.player-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.player-back-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.player-title-block {
+    text-align: center;
+}
+
+.now-playing-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+#player-reciter {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--secondary-color);
+}
+
+.player-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.player-artwork {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+    border: 4px solid var(--secondary-color);
+    box-shadow: 0 0 30px rgba(214, 175, 55, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.crescent-bg {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: #093b2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.crescent-bg::after {
+    content: '';
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    border: 1px dashed rgba(214, 175, 55, 0.3);
+}
+
+.center-mosque {
+    font-size: 4.5rem;
+    color: var(--secondary-color);
+    filter: drop-shadow(0 0 10px rgba(214,175,55,0.4));
+}
+
+.player-track-info {
+    text-align: center;
+}
+
+#player-track-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+#player-track-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+/* Audio Progress */
+.player-progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.time-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    width: 50px;
+    text-align: center;
+}
+
+#player-progress-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+    cursor: pointer;
+}
+
+#player-progress-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    box-shadow: 0 0 8px rgba(214, 175, 55, 0.8);
+    cursor: pointer;
+}
+
+#player-progress-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    box-shadow: 0 0 8px rgba(214, 175, 55, 0.8);
+    cursor: pointer;
+}
+
+/* Player Controls Row */
+.player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    width: 100%;
+}
+
+.control-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.control-btn:active {
+    transform: scale(0.9);
+}
+
+.control-btn.active {
+    color: var(--secondary-color);
+}
+
+.control-btn.primary {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    color: var(--dark-bg);
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(214, 175, 55, 0.35);
+}
+
+.control-btn.primary i {
+    transform: translateX(-2px); /* Centering triangle icon slightly */
+}
+
+.control-btn.primary.paused i {
+    transform: translateX(0);
+}
+
+/* BOTTOM NAVIGATION BAR */
+.app-nav {
+    background: #072a1e;
+    border-top: 1px solid var(--card-border);
+    height: 66px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+}
+
+.nav-item {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.nav-item i {
+    font-size: 1.15rem;
+}
+
+.nav-item span {
+    font-size: 0.65rem;
+}
+
+.nav-item.active {
+    color: var(--secondary-color);
+}
+
+/* Persistent background Mini-player (Floating style) */
+.mini-player {
+    position: absolute;
+    bottom: 74px;
+    left: 12px;
+    right: 12px;
+    height: 56px;
+    background: linear-gradient(to left, rgba(11, 76, 53, 0.95), rgba(7, 42, 30, 0.95));
+    border: 1px solid rgba(214, 175, 55, 0.25);
+    display: none; /* Injected dynamically */
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    margin-bottom: 0;
+    z-index: 90;
+    animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mini-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pulse-icon {
+    font-size: 1.3rem;
+    color: var(--secondary-color);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.7; }
+}
+
+.mini-info h5 {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.mini-info p {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.mini-play-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* SETTINGS PANEL & LIGHT MODE STYLES */
+.settings-btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.15rem;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.settings-btn-icon:active {
+    transform: scale(0.9) rotate(30deg);
+}
+
+.settings-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 55%;
+    background: #093b2a;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-top: 2px solid var(--secondary-color);
+    z-index: 150;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.settings-panel.active {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.settings-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.setting-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.theme-switch-container {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.theme-btn.active {
+    background: var(--primary-light);
+    color: white;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 10px rgba(214, 175, 55, 0.2);
+}
+
+/* Light Mode Variables Override & UI Polishing */
+.phone-wrapper.light-mode {
+    --dark-bg: #f2f5f3;
+    --card-bg: #ffffff;
+    --card-border: rgba(11, 76, 53, 0.08);
+    --text-color: #06261b;
+    --text-muted: #5a7a6e;
+    --primary-color: #0b4c35;
+    --primary-light: #166e4f;
+}
+
+/* Maintain solid headers and nav bars for structure and contrast */
+.phone-wrapper.light-mode .app-header {
+    background: #0b4c35;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.phone-wrapper.light-mode .app-header .app-logo span,
+.phone-wrapper.light-mode .app-header .header-date span,
+.phone-wrapper.light-mode .app-header .header-date .sub-date,
+.phone-wrapper.light-mode .app-header .settings-btn-icon {
+    color: #ffffff !important;
+}
+
+.phone-wrapper.light-mode .app-nav {
+    background: #0b4c35;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.phone-wrapper.light-mode .app-nav .nav-item {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.phone-wrapper.light-mode .app-nav .nav-item.active {
+    color: var(--secondary-color);
+}
+
+/* Card Styling Override */
+.phone-wrapper.light-mode .card {
+    background: #ffffff;
+    border-color: rgba(11, 76, 53, 0.08);
+    box-shadow: 0 4px 12px rgba(11, 76, 53, 0.06);
+    color: #06261b;
+}
+
+.phone-wrapper.light-mode .prayer-widget {
+    background: #ffffff;
+    border-color: rgba(214, 175, 55, 0.3);
+    box-shadow: 0 6px 16px rgba(11, 76, 53, 0.08);
+}
+
+.phone-wrapper.light-mode .prayer-widget .title {
+    color: #0b4c35;
+}
+
+.phone-wrapper.light-mode .prayer-card {
+    background: #f7faf8;
+    border-color: rgba(11, 76, 53, 0.06);
+}
+
+.phone-wrapper.light-mode .prayer-card .name {
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode .prayer-card .time {
+    color: #06261b;
+}
+
+/* Active Next Prayer Highlight */
+.phone-wrapper.light-mode .prayer-card.active {
+    background: linear-gradient(135deg, #0b4c35 0%, #166e4f 100%);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 10px rgba(11, 76, 53, 0.2);
+}
+
+.phone-wrapper.light-mode .prayer-card.active .name {
+    color: var(--secondary-color) !important;
+}
+
+.phone-wrapper.light-mode .prayer-card.active .time {
+    color: #ffffff !important;
+}
+
+/* Facebook Button Override */
+.phone-wrapper.light-mode .facebook-btn {
+    background: #1877f2;
+    border-color: #1877f2;
+    color: #ffffff !important;
+}
+
+.phone-wrapper.light-mode .facebook-btn i {
+    color: #ffffff;
+}
+
+/* Tab Button Override */
+.phone-wrapper.light-mode .tab-btn {
+    background: #ffffff;
+    border-color: rgba(11, 76, 53, 0.1);
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode .tab-btn.active {
+    background: #0b4c35;
+    color: #ffffff;
+    border-color: #0b4c35;
+}
+
+/* Reciter Card Override */
+.phone-wrapper.light-mode .reciter-card {
+    background: #ffffff;
+    border-color: rgba(11, 76, 53, 0.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.phone-wrapper.light-mode .reciter-card .reciter-info-name {
+    color: #06261b;
+}
+
+.phone-wrapper.light-mode .reciter-avatar {
+    border-color: #ccd7d0;
+}
+
+/* Reset Button */
+.phone-wrapper.light-mode .reset-btn {
+    background: #ffffff;
+}
+
+/* Tasbih Dropdown */
+.phone-wrapper.light-mode .tasbih-dropdown {
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.phone-wrapper.light-mode .tasbih-dropdown div {
+    border-bottom-color: rgba(11, 76, 53, 0.06);
+    color: #06261b;
+}
+
+.phone-wrapper.light-mode .tasbih-dropdown div:hover {
+    background: #ccd7d0;
+}
+
+/* Bottom sheets (Surah selector, Settings panel) */
+.phone-wrapper.light-mode .surah-selector-panel,
+.phone-wrapper.light-mode .settings-panel {
+    background: #ffffff;
+    border-top-color: var(--secondary-color);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.phone-wrapper.light-mode .settings-panel h3,
+.phone-wrapper.light-mode .surah-selector-panel h3,
+.phone-wrapper.light-mode .panel-header h3 {
+    color: #0b4c35;
+}
+
+.phone-wrapper.light-mode .close-panel-btn {
+    background: #f7faf8;
+    color: #0b4c35;
+}
+
+.phone-wrapper.light-mode .surah-search {
+    background: #f7faf8;
+    border: 1px solid rgba(11, 76, 53, 0.08);
+}
+
+.phone-wrapper.light-mode .surah-search input {
+    color: #06261b;
+}
+
+.phone-wrapper.light-mode .surah-item {
+    background: #f7faf8;
+    border-color: rgba(11, 76, 53, 0.06);
+    color: #06261b;
+}
+
+.phone-wrapper.light-mode .surah-item:active {
+    background: #0b4c35;
+    color: #ffffff;
+}
+
+.phone-wrapper.light-mode .surah-item:active .surah-index {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.phone-wrapper.light-mode .surah-index {
+    background: rgba(11, 76, 53, 0.05);
+    color: #0b4c35;
+}
+
+/* Audio Player Overlay Override */
+.phone-wrapper.light-mode .player-overlay {
+    background: radial-gradient(circle at center, #f4f7f5 0%, #d6e2db 100%);
+}
+
+.phone-wrapper.light-mode #player-track-name {
+    color: #0b4c35;
+}
+
+.phone-wrapper.light-mode #player-reciter {
+    color: #8c701b;
+}
+
+.phone-wrapper.light-mode .now-playing-label {
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode .crescent-bg {
+    background: #e4ebe7;
+}
+
+.phone-wrapper.light-mode .time-label {
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode #player-progress-slider {
+    background: rgba(11, 76, 53, 0.15);
+}
+
+.phone-wrapper.light-mode .control-btn {
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode .control-btn.primary {
+    background: #0b4c35;
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(11, 76, 53, 0.2);
+}
+
+.phone-wrapper.light-mode .control-btn.primary i {
+    color: #ffffff;
+}
+
+.phone-wrapper.light-mode .control-btn.active {
+    color: var(--secondary-color);
+}
+
+.phone-wrapper.light-mode .player-back-btn {
+    background: rgba(11, 76, 53, 0.1);
+    color: #0b4c35;
+}
+
+/* Zekr Cards and counter */
+.phone-wrapper.light-mode .zekr-card {
+    background: #ffffff;
+    border-color: rgba(11, 76, 53, 0.08);
+}
+
+.phone-wrapper.light-mode .zekr-counter-btn {
+    background: #0b4c35;
+    color: #ffffff;
+}
+
+/* Tasbih selector & Circle counter */
+.phone-wrapper.light-mode .tasbih-selector {
+    background: #f7faf8;
+    color: #0b4c35;
+    border-color: rgba(11, 76, 53, 0.1);
+}
+
+.phone-wrapper.light-mode .tasbih-circle {
+    background: radial-gradient(circle, #f7faf8 0%, #e4ebe7 100%);
+    border-color: #0b4c35;
+    box-shadow: 0 0 20px rgba(11, 76, 53, 0.1);
+}
+
+.phone-wrapper.light-mode #tasbih-counter {
+    color: #0b4c35;
+}
+
+/* Settings Theme Buttons */
+.phone-wrapper.light-mode .theme-btn {
+    background: #ffffff;
+    border-color: rgba(11, 76, 53, 0.1);
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode .theme-btn.active {
+    background: #ccd7d0;
+    color: #0b4c35;
+    border-color: #0b4c35;
+}
+
+.phone-wrapper.light-mode .sub-date {
+    color: #5a7a6e;
+}
+
+/* WRITTEN QURAN STYLES */
+.quran-surahs-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.quran-reader-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #072a1e;
+    z-index: 130;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    pointer-events: none;
+    padding-top: 40px; /* Add safety space for close button & status bar area */
+}
+
+.quran-reader-panel.active {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.quran-reader-panel .panel-header {
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+.quran-reader-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 30px 40px 30px;
+    font-family: 'UthmanicHafs', 'Amiri', serif;
+    font-size: 2.1rem;
+    line-height: 2.6;
+    text-align: center;
+    direction: rtl;
+    color: #ffffff;
+}
+
+.quran-reader-body p {
+    margin-bottom: 16px;
+}
+
+.ayah-text {
+    display: inline;
+}
+
+.ayah-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin: 0 8px;
+    vertical-align: middle;
+    background: rgba(214, 175, 55, 0.1);
+}
+
+.bismillah-text {
+    font-family: 'UthmanicHafs', 'Amiri', serif;
+    font-size: 1.9rem;
+    text-align: center;
+    color: var(--secondary-color);
+    margin-bottom: 24px;
+    display: block;
+    font-weight: 700;
+}
+
+/* Light Mode Overrides for Quran Text Reader */
+.phone-wrapper.light-mode .quran-reader-panel {
+    background: #f4f7f5;
+}
+
+.phone-wrapper.light-mode .quran-reader-body {
+    color: #06261b;
+}
+
+.phone-wrapper.light-mode .surah-search {
+    background: #ffffff;
+    border: 1px solid rgba(11, 76, 53, 0.08);
+}
+
+.phone-wrapper.light-mode .surah-search input {
+    color: #06261b;
+}
+
+/* Auto-Scroll Control Bar styling */
+.scroll-control-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #093b2a;
+    border-top: 1px solid rgba(214, 175, 55, 0.15);
+    padding: 14px 20px;
+    gap: 15px;
+    z-index: 10;
+}
+
+.scroll-control-bar button {
+    background: var(--secondary-color);
+    color: #06261b;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+
+.scroll-control-bar button:active {
+    transform: scale(0.95);
+}
+
+.scroll-control-bar button.scrolling-active {
+    background: #e74c3c;
+    color: white;
+}
+
+.scroll-speed-slider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.scroll-speed-slider i {
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+}
+
+.scroll-speed-slider input[type="range"] {
+    width: 80px;
+    accent-color: var(--secondary-color);
+    cursor: pointer;
+}
+
+/* Light mode overrides for auto-scroll bar */
+.phone-wrapper.light-mode .scroll-control-bar {
+    background: #ffffff;
+    border-top: 1px solid rgba(11, 76, 53, 0.08);
+}
+
+.phone-wrapper.light-mode .scroll-control-bar button {
+    background: #0b4c35;
+    color: white;
+}
+
+.phone-wrapper.light-mode .scroll-control-bar button.scrolling-active {
+    background: #d35400;
+}
+
+.phone-wrapper.light-mode .scroll-speed-slider i {
+    color: #0b4c35;
+}
+
+/* BOOKMARK & LAST READ STYLES */
+.last-read-card {
+    background: linear-gradient(135deg, rgba(214, 175, 55, 0.12) 0%, rgba(11, 76, 53, 0.15) 100%);
+    border: 1px solid rgba(214, 175, 55, 0.25);
+    border-radius: 16px;
+    padding: 14px 20px;
+    margin: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.last-read-card:active {
+    transform: scale(0.98);
+}
+
+.last-read-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: right;
+}
+
+.last-read-info i {
+    font-size: 1.4rem;
+}
+
+.last-read-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.last-read-info .badge-label {
+    font-size: 0.7rem;
+    color: var(--secondary-color);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.last-read-info .surah-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.last-read-card .arrow-icon {
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bookmark-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--secondary-color);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.bookmark-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.bookmark-btn.saved i {
+    font-weight: 900; /* Makes fontawesome regular icon solid */
+}
+
+/* Light mode overrides for bookmark & last read */
+.phone-wrapper.light-mode .last-read-card {
+    background: linear-gradient(135deg, rgba(11, 76, 53, 0.05) 0%, rgba(214, 175, 55, 0.08) 100%);
+    border-color: rgba(11, 76, 53, 0.15);
+    box-shadow: 0 4px 12px rgba(11, 76, 53, 0.05);
+}
+
+.phone-wrapper.light-mode .last-read-info .surah-name {
+    color: #0b4c35;
+}
+
+.phone-wrapper.light-mode .bookmark-btn {
+    background: rgba(11, 76, 53, 0.08);
+}
+
+.phone-wrapper.light-mode .bookmark-btn:active {
+    background: rgba(11, 76, 53, 0.15);
+}
+
+.last-read-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.delete-bookmark-btn {
+    background: transparent;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    padding: 6px;
+    font-size: 1rem;
+    transition: color 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-bookmark-btn:active {
+    transform: scale(0.9);
+}
+
+.phone-wrapper.light-mode .delete-bookmark-btn {
+    color: #c0392b;
+}
+
+/* SETTINGS TOGGLE SWITCH */
+.setting-switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 10px;
+    direction: rtl;
+}
+
+.setting-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    text-align: right;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: .3s;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* Light mode overrides for toggle switch */
+.phone-wrapper.light-mode .setting-desc {
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode .toggle-slider {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.phone-wrapper.light-mode .toggle-switch input:checked + .toggle-slider {
+    background-color: #0b4c35;
+    border-color: #0b4c35;
+}
+
+/* DR SAAD HAMOUDA CATEGORIES STYLING */
+.saad-categories-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 8px;
+    direction: rtl;
+}
+
+.saad-category-card {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    gap: 16px;
+}
+
+.saad-category-card:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.category-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.category-info {
+    flex-grow: 1;
+    text-align: right;
+}
+
+.category-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: white;
+}
+
+.category-info p {
+    margin: 0;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.category-arrow {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.saad-category-card:hover .category-arrow {
+    color: var(--secondary-color);
+}
+
+.back-btn-saad {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    padding: 4px;
+    color: var(--secondary-color);
+    transition: transform 0.2s;
+}
+
+.back-btn-saad:active {
+    transform: scale(0.9);
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--secondary-color);
+    font-size: 1rem;
+    gap: 12px;
+}
+
+/* Light mode overrides for categories */
+.phone-wrapper.light-mode .saad-category-card {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+.phone-wrapper.light-mode .category-info h4 {
+    color: #0b4c35;
+}
+
+.phone-wrapper.light-mode .category-info p {
+    color: #5a7a6e;
+}
+
+.phone-wrapper.light-mode .category-arrow {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+.phone-wrapper.light-mode .category-icon-wrapper {
+    background: rgba(11, 76, 53, 0.08);
+    color: #0b4c35;
+}
+
+/* YouTube In-App Player Modal */
+.youtube-player-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    direction: rtl;
+}
+
+.youtube-player-modal.active {
+    display: flex;
+}
+
+.youtube-player-modal .modal-content {
+    background: #093b2a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    width: 90%;
+    max-width: 340px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.youtube-player-modal .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.youtube-player-modal .modal-header h4 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80%;
+}
+
+.youtube-player-modal .close-modal-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.youtube-player-modal .close-modal-btn:active {
+    transform: scale(0.9);
+}
+
+.youtube-player-modal .iframe-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.youtube-player-modal #youtube-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Light mode overrides for YouTube modal */
+.phone-wrapper.light-mode .youtube-player-modal .modal-content {
+    background: #eef5f1;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.phone-wrapper.light-mode .youtube-player-modal .modal-header h4 {
+    color: #0b4c35;
+}
+
+.phone-wrapper.light-mode .youtube-player-modal .close-modal-btn {
+    color: #0b4c35;
+}
+
+

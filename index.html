@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محراب الحوامدية - Mehrab Al-Hawamdya</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="phone-wrapper">
+        <div class="phone-screen">
+            <!-- App Header -->
+            <header class="app-header">
+                <button class="settings-btn-icon" onclick="toggleSettingsPanel()"><i class="fa-solid fa-gear"></i></button>
+                <div class="app-logo">
+                    <img src="images/MehrabLogo.png" alt="Logo" class="header-logo-img">
+                    <span>مِحرَاب الحَوامدية</span>
+                </div>
+                <div class="header-date">
+                    <span id="hijri-date-header">...</span>
+                    <span id="gregorian-date-header" class="sub-date">...</span>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content Area -->
+            <main class="app-content">
+
+                <!-- 1. HOME SCREEN VIEW -->
+                <section id="view-home" class="app-view active">
+                    <!-- Prayer Times Widget -->
+                    <div class="prayer-widget card">
+                        <div class="widget-header">
+                            <span class="title"><i class="fa-regular fa-clock gold-text"></i> مواقيت الصلاة (الحوامدية)</span>
+                            <span class="badge offline-badge">أوفلاين</span>
+                        </div>
+                        <div class="prayer-grid">
+                            <div class="prayer-card" id="prayer-fajr">
+                                <span class="name">الفجر</span>
+                                <span class="time">--:--</span>
+                            </div>
+                            <div class="prayer-card" id="prayer-shuruq">
+                                <span class="name">الشروق</span>
+                                <span class="time">--:--</span>
+                            </div>
+                            <div class="prayer-card" id="prayer-dhuhr">
+                                <span class="name">الظهر</span>
+                                <span class="time">--:--</span>
+                            </div>
+                            <div class="prayer-card" id="prayer-asr">
+                                <span class="name">العصر</span>
+                                <span class="time">--:--</span>
+                            </div>
+                            <div class="prayer-card" id="prayer-maghrib">
+                                <span class="name">المغرب</span>
+                                <span class="time">--:--</span>
+                            </div>
+                            <div class="prayer-card" id="prayer-isha">
+                                <span class="name">العشاء</span>
+                                <span class="time">--:--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social and Promo Links -->
+                    <div class="links-row">
+                        <a href="https://www.facebook.com" target="_blank" class="social-btn facebook-btn card">
+                            <i class="fa-brands fa-facebook"></i>
+                            <span>زيارة صفحة فيسبوك</span>
+                        </a>
+                    </div>
+
+
+                    <!-- Quick Navigation Grid -->
+                    <div class="home-grid">
+                        <div class="grid-item card" onclick="switchTab('reciters')">
+                            <div class="icon-wrap bg-green-light">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <span class="title">قراء الحوامدية</span>
+                        </div>
+                        <div class="grid-item card" onclick="switchTab('saad')">
+                            <div class="icon-wrap bg-gold-light">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <span class="title">د. سعد حمودة</span>
+                        </div>
+                        <div class="grid-item card" onclick="switchTab('azkar')">
+                            <div class="icon-wrap bg-blue-light">
+                                <i class="fa-solid fa-hands-praying"></i>
+                            </div>
+                            <span class="title">الأذكار</span>
+                        </div>
+                        <div class="grid-item card" onclick="switchTab('tasbih')">
+                            <div class="icon-wrap bg-red-light">
+                                <i class="fa-solid fa-circle-dot"></i>
+                            </div>
+                            <span class="title">السبحة</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. RECITERS SCREEN VIEW -->
+                <section id="view-reciters" class="app-view">
+                    <!-- Category Tabs -->
+                    <div class="category-tabs">
+                        <button class="tab-btn active" onclick="filterReciters('hawamdya')">قراء الحوامدية</button>
+                        <button class="tab-btn" onclick="filterReciters('egypt')">قراء مصر</button>
+                        <button class="tab-btn" onclick="filterReciters('saudi')">السعودية</button>
+                    </div>
+
+                    <!-- Reciters Cards List Container -->
+                    <div class="reciters-list" id="reciters-container">
+                        <!-- Dynamic content injected by app.js -->
+                    </div>
+
+                    <!-- Surah Selection Overlay / Bottom Sheet (Hidden by default) -->
+                    <div class="surah-selector-panel" id="surah-panel">
+                        <div class="panel-header">
+                            <h3 id="panel-reciter-name">اسم القارئ</h3>
+                            <button class="close-panel-btn" onclick="closeSurahPanel()"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div class="surah-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="surah-search-input" placeholder="ابحث عن سورة أو درس..." oninput="searchSurah()">
+                        </div>
+                        <div class="surah-list" id="surah-list-container">
+                            <!-- Dynamic list injected by app.js -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2B. DR. SAAD HAMOUDA STANDALONE VIEW -->
+                <section id="view-saad" class="app-view">
+                    <div class="panel-header" style="padding: 16px 8px 8px 8px; justify-content: center; position: relative;">
+                        <h3 id="saad-title-header" style="color: #D4AF37; font-weight: bold; text-align: center; font-size: 1.25rem;">د. سعد حمودة - الدروس والخطب</h3>
+                    </div>
+                    <div class="surah-search" id="saad-search-box" style="display: none; margin-bottom: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 14px;">
+                        <i class="fa-solid fa-magnifying-glass" style="color: rgba(255,255,255,0.3); margin-left: 8px;"></i>
+                        <input type="text" id="saad-search-input" placeholder="ابحث في هذا القسم..." oninput="searchSaadItems()" style="background: transparent; border: none; color: white; width: 100%; font-family: inherit; font-size: 0.85rem; outline: none;">
+                    </div>
+                    <div class="surah-list" id="saad-content-container" style="padding: 0 8px;">
+                        <!-- Dynamic categories/list injected by app.js -->
+                    </div>
+                </section>
+
+                <!-- 5. QURAN TEXT SCREEN VIEW -->
+                <section id="view-quran" class="app-view">
+                    <!-- Last Read Quick Link Card -->
+                    <div class="last-read-card card" id="quran-last-read-card" style="display: none;" onclick="goToLastRead()">
+                        <div class="last-read-info">
+                            <i class="fa-solid fa-bookmark gold-text"></i>
+                            <div>
+                                <span class="badge-label">متابعة القراءة</span>
+                                <span class="surah-name" id="quran-last-read-text">سورة البقرة</span>
+                            </div>
+                        </div>
+                        <div class="last-read-actions">
+                            <button class="delete-bookmark-btn" onclick="event.stopPropagation(); deleteLastReadBookmark();" title="مسح الموضع المحفوظ">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                            <i class="fa-solid fa-chevron-left arrow-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="surah-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="quran-search-input" placeholder="ابحث عن سورة..." oninput="searchQuranTextSurah()">
+                    </div>
+                    <div class="quran-surahs-list" id="quran-surahs-container">
+                        <!-- Dynamic list of 114 Surahs injected by app.js -->
+                    </div>
+                </section>
+
+                <!-- 3. AZKAR SCREEN VIEW -->
+                <section id="view-azkar" class="app-view">
+                    <div class="azkar-header-tabs">
+                        <button class="azkar-tabactive active" id="azkar-tab-morning" onclick="switchAzkarType('morning')">أذكار الصباح</button>
+                        <button class="azkar-tabactive" id="azkar-tab-evening" onclick="switchAzkarType('evening')">أذكار المساء</button>
+                    </div>
+                    <div class="azkar-container" id="azkar-list-container">
+                        <!-- Dynamic azkar items injected by app.js -->
+                    </div>
+                </section>
+
+                <!-- 4. TASBIH SCREEN VIEW -->
+                <section id="view-tasbih" class="app-view">
+                    <div class="tasbih-card card">
+                        <button class="tasbih-selector" onclick="toggleTasbihDropdown()">
+                            <span id="current-tasbih-text">سبحان الله وبحمده</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="tasbih-dropdown" id="tasbih-dropdown-list">
+                            <div onclick="selectTasbih('سبحان الله وبحمده', 'كلمتان خفيفتان على اللسان ثقيلتان في الميزان')">سبحان الله وبحمده</div>
+                            <div onclick="selectTasbih('الحمد لله', 'تملأ الميزان بالخيرات')">الحمد لله</div>
+                            <div onclick="selectTasbih('لا إله إلا الله وحده لا شريك له', 'كانت له عدل عشر رقاب، وكتبت له مئة حسنة')">لا إله إلا الله وحده لا شريك له</div>
+                            <div onclick="selectTasbih('الله أكبر', 'أحب الكلام إلى الله')">الله أكبر</div>
+                            <div onclick="selectTasbih('أستغفر الله العظيم وأتوب إليه', 'تجلب الرزق وتغفر الذنوب')">أستغفر الله العظيم وأتوب إليه</div>
+                        </div>
+
+                        <div class="tasbih-benefit" id="tasbih-benefit-text">
+                            كلمتان خفيفتان على اللسان ثقيلتان في الميزان
+                        </div>
+
+                        <!-- Counter Display -->
+                        <div class="tasbih-circle" onclick="incrementTasbih()">
+                            <span id="tasbih-counter">0</span>
+                            <span class="click-instruction">اضغط للتسبيح</span>
+                        </div>
+
+                        <!-- Reset & Audio toggle -->
+                        <div class="tasbih-controls">
+                            <button class="reset-btn card" onclick="resetTasbih()">
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <span>إعادة</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="app-nav">
+                <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
+                    <i class="fa-solid fa-house"></i>
+                    <span>الرئيسية</span>
+                </button>
+                <button class="nav-item" id="nav-reciters" onclick="switchTab('reciters')">
+                    <i class="fa-solid fa-microphone"></i>
+                    <span>القراء</span>
+                </button>
+                <button class="nav-item" id="nav-saad" onclick="switchTab('saad')">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>دروس وخطب</span>
+                </button>
+                <button class="nav-item" id="nav-quran" onclick="switchTab('quran')">
+                    <i class="fa-solid fa-book-quran"></i>
+                    <span>المصحف</span>
+                </button>
+                <button class="nav-item" id="nav-azkar" onclick="switchTab('azkar')">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                    <span>الأذكار</span>
+                </button>
+                <button class="nav-item" id="nav-tasbih" onclick="switchTab('tasbih')">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <span>السبحة</span>
+                </button>
+            </nav>
+
+            <!-- Persistent Bottom mini-player (visible when playing audio in background) -->
+            <div class="mini-player card" id="mini-player" onclick="showAudioPlayer()">
+                <div class="mini-info">
+                    <i class="fa-solid fa-circle-play pulse-icon"></i>
+                    <div>
+                        <h5 id="mini-track-name">اسم السورة</h5>
+                        <p id="mini-reciter-name">اسم القارئ</p>
+                    </div>
+                </div>
+                <button class="mini-play-btn" onclick="event.stopPropagation(); togglePlayPause();">
+                    <i class="fa-solid fa-play" id="mini-play-icon"></i>
+                </button>
+            </div>
+
+            <!-- 5. FULL AUDIO PLAYER OVERLAY (Visible when playing audio) -->
+            <section id="audio-player-overlay" class="player-overlay">
+                <div class="player-header">
+                    <button class="player-back-btn" onclick="hideAudioPlayer()"><i class="fa-solid fa-chevron-down"></i></button>
+                    <div class="player-title-block">
+                        <span class="now-playing-label">يتم التشغيل الآن</span>
+                        <h4 id="player-reciter">اسم الشيخ</h4>
+                    </div>
+                    <div style="width: 40px;"></div> <!-- Spacer -->
+                </div>
+
+                <div class="player-body">
+                    <!-- Disc / Decorative Artwork -->
+                    <div class="player-artwork">
+                        <div class="crescent-bg">
+                            <i class="fa-solid fa-mosque center-mosque"></i>
+                        </div>
+                    </div>
+
+                    <!-- Surah Title -->
+                    <div class="player-track-info">
+                        <h2 id="player-track-name">اسم السورة</h2>
+                        <span id="player-track-desc">القرآن الكريم كامل</span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="player-progress-container">
+                        <span class="time-label" id="player-current-time">00:00:00</span>
+                        <input type="range" id="player-progress-slider" min="0" max="100" value="0" oninput="seekAudio(this.value)">
+                        <span class="time-label" id="player-total-time">00:00:00</span>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="player-controls">
+                        <button class="control-btn secondary" id="btn-repeat" onclick="toggleRepeat()">
+                            <i class="fa-solid fa-repeat"></i>
+                        </button>
+                        <button class="control-btn primary play-pause" id="btn-play-pause" onclick="togglePlayPause()">
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                        <button class="control-btn secondary" id="btn-share" onclick="shareTrack()">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Panel Overlay (Hidden by default) -->
+            <div class="settings-panel" id="settings-panel">
+                <div class="panel-header">
+                    <h3>إعدادات التطبيق</h3>
+                    <button class="close-panel-btn" onclick="toggleSettingsPanel()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="settings-body">
+                    <div class="setting-item card">
+                        <div class="setting-title"><i class="fa-solid fa-palette gold-text"></i> مظهر التطبيق</div>
+                        <div class="theme-switch-container">
+                            <button class="theme-btn active" id="theme-btn-dark" onclick="setThemeMode('dark')">
+                                <i class="fa-solid fa-moon"></i> <span>الوضع الداكن</span>
+                            </button>
+                            <button class="theme-btn" id="theme-btn-light" onclick="setThemeMode('light')">
+                                <i class="fa-solid fa-sun"></i> <span>الوضع المضيء</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item card">
+                        <div class="setting-title"><i class="fa-solid fa-bell gold-text"></i> تنبيهات الأذان</div>
+                        <div class="setting-switch-row">
+                            <span class="setting-desc">تنبيه بالصوت وإشعار عند دخول وقت الصلاة (يجب ترك الصفحة مفتوحة)</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="web-notifications-switch" onchange="toggleWebNotifications(this.checked)">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Quran Surah Text Reader Panel (Hidden by default) -->
+            <div class="quran-reader-panel" id="quran-reader-panel">
+                <div class="panel-header">
+                    <h3 id="quran-reader-title">سورة الفاتحة</h3>
+                    <div class="header-actions">
+                        <button class="bookmark-btn" id="btn-save-bookmark" onclick="toggleLastReadPosition()" title="حفظ علامة القراءة"><i class="fa-regular fa-bookmark"></i></button>
+                        <button class="close-panel-btn" onclick="closeQuranReader()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                <div class="quran-reader-body" id="quran-reader-body">
+                    <!-- Injected verses text -->
+                </div>
+                
+                <!-- Auto Scroll Control Bar -->
+                <div class="scroll-control-bar">
+                    <button id="btn-auto-scroll" onclick="toggleAutoScroll()">
+                        <i class="fa-solid fa-play"></i> <span>التمرير التلقائي</span>
+                    </button>
+                    <div class="scroll-speed-slider">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <input type="range" id="scroll-speed-input" min="1" max="10" value="3" oninput="updateScrollSpeed()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- YouTube Video Player Modal Overlay -->
+    <div class="youtube-player-modal" id="youtube-player-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="youtube-video-title">عنوان الفيديو</h4>
+                <button class="close-modal-btn" onclick="closeYoutubePlayer()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="iframe-container">
+                <iframe id="youtube-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quran Text Database -->
+    <script src="quran_text.js"></script>
+    <!-- App Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>
