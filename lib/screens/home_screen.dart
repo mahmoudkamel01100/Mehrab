@@ -238,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            Icon(FontAwesomeIcons.facebook, color: Color(0xFF1877F2), size: 20),
+            FaIcon(FontAwesomeIcons.facebook, color: Color(0xFF1877F2), size: 20),
             SizedBox(width: 12),
             Text(
               'زيارة صفحة فيسبوك',
