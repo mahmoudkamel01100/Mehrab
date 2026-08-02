@@ -103,7 +103,6 @@ class _YoutubePlayerScreenState extends State<YoutubePlayerScreen> {
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 }
