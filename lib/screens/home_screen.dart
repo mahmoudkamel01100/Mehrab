@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.between,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
               Text(
                 'مواقيت الصلاة (الحوامدية)',
