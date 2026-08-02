@@ -42,7 +42,7 @@ class AudioPlayerScreen extends StatelessWidget {
                     children: [
                       // Header
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.between,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
                             icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 28),
@@ -153,7 +153,7 @@ class AudioPlayerScreen extends StatelessWidget {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.between,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(_formatDuration(position), style: const TextStyle(fontSize: 10, color: Color(0xFFA3C8BC))),
                                             Text(_formatDuration(duration), style: const TextStyle(fontSize: 10, color: Color(0xFFA3C8BC))),
