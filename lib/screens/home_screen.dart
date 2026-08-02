@@ -398,6 +398,87 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  void _startCountdown() {
+    _countdownTimer?.cancel();
+    _updateCountdown(); // Run immediately on start
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateCountdown();
+    });
+  }
+
+  void _updateCountdown() {
+    final now = DateTime.now();
+    final prayerTimes = PrayerTimesService.calculatePrayerTimes();
+    final nextPrayer = prayerTimes.nextPrayer();
+    
+    if (nextPrayer == Prayer.none) {
+      if (mounted) {
+        setState(() {
+          _nextPrayerCountdown = '';
+          _nextPrayerName = '';
+        });
+      }
+      return;
+    }
+    
+    DateTime nextPrayerTime;
+    String prayerNameAr = '';
+    
+    switch (nextPrayer) {
+      case Prayer.fajr:
+        nextPrayerTime = prayerTimes.fajr;
+        prayerNameAr = 'الفجر';
+        break;
+      case Prayer.sunrise:
+        nextPrayerTime = prayerTimes.sunrise;
+        prayerNameAr = 'الشروق';
+        break;
+      case Prayer.dhuhr:
+        nextPrayerTime = prayerTimes.dhuhr;
+        prayerNameAr = 'الظهر';
+        break;
+      case Prayer.asr:
+        nextPrayerTime = prayerTimes.asr;
+        prayerNameAr = 'العصر';
+        break;
+      case Prayer.maghrib:
+        nextPrayerTime = prayerTimes.maghrib;
+        prayerNameAr = 'المغرب';
+        break;
+      case Prayer.isha:
+        nextPrayerTime = prayerTimes.isha;
+        prayerNameAr = 'العشاء';
+        break;
+      default:
+        nextPrayerTime = now;
+    }
+    
+    // Ensure if calculated time is slightly behind 'now' due to millisecond delays, it handles it safely
+    if (nextPrayerTime.isBefore(now)) {
+      nextPrayerTime = nextPrayerTime.add(const Duration(days: 1));
+    }
+    
+    final difference = nextPrayerTime.difference(now);
+    
+    final hours = difference.inHours.toString().padLeft(2, '0');
+    final minutes = (difference.inMinutes % 60).toString().padLeft(2, '0');
+    final seconds = (difference.inSeconds % 60).toString().padLeft(2, '0');
+    
+    if (mounted) {
+      setState(() {
+        _nextPrayerName = prayerNameAr;
+        _nextPrayerCountdown = '$hours:$minutes:$seconds';
+        _prayerTimes = prayerTimes;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _countdownTimer?.cancel();
+    super.dispose();
+  }
 }
 
 class ContainerBadge extends StatelessWidget {
@@ -491,86 +572,5 @@ class MiniPlayerWidget extends StatelessWidget {
         );
       },
     );
-  }
-
-  void _startCountdown() {
-    _countdownTimer?.cancel();
-    _updateCountdown(); // Run immediately on start
-    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _updateCountdown();
-    });
-  }
-
-  void _updateCountdown() {
-    final now = DateTime.now();
-    final prayerTimes = PrayerTimesService.calculatePrayerTimes();
-    final nextPrayer = prayerTimes.nextPrayer();
-    
-    if (nextPrayer == Prayer.none) {
-      if (mounted) {
-        setState(() {
-          _nextPrayerCountdown = '';
-          _nextPrayerName = '';
-        });
-      }
-      return;
-    }
-    
-    DateTime nextPrayerTime;
-    String prayerNameAr = '';
-    
-    switch (nextPrayer) {
-      case Prayer.fajr:
-        nextPrayerTime = prayerTimes.fajr;
-        prayerNameAr = 'الفجر';
-        break;
-      case Prayer.sunrise:
-        nextPrayerTime = prayerTimes.sunrise;
-        prayerNameAr = 'الشروق';
-        break;
-      case Prayer.dhuhr:
-        nextPrayerTime = prayerTimes.dhuhr;
-        prayerNameAr = 'الظهر';
-        break;
-      case Prayer.asr:
-        nextPrayerTime = prayerTimes.asr;
-        prayerNameAr = 'العصر';
-        break;
-      case Prayer.maghrib:
-        nextPrayerTime = prayerTimes.maghrib;
-        prayerNameAr = 'المغرب';
-        break;
-      case Prayer.isha:
-        nextPrayerTime = prayerTimes.isha;
-        prayerNameAr = 'العشاء';
-        break;
-      default:
-        nextPrayerTime = now;
-    }
-    
-    // Ensure if calculated time is slightly behind 'now' due to millisecond delays, it handles it safely
-    if (nextPrayerTime.isBefore(now)) {
-      nextPrayerTime = nextPrayerTime.add(const Duration(days: 1));
-    }
-    
-    final difference = nextPrayerTime.difference(now);
-    
-    final hours = difference.inHours.toString().padLeft(2, '0');
-    final minutes = (difference.inMinutes % 60).toString().padLeft(2, '0');
-    final seconds = (difference.inSeconds % 60).toString().padLeft(2, '0');
-    
-    if (mounted) {
-      setState(() {
-        _nextPrayerName = prayerNameAr;
-        _nextPrayerCountdown = '$hours:$minutes:$seconds';
-        _prayerTimes = prayerTimes;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _countdownTimer?.cancel();
-    super.dispose();
   }
 }
