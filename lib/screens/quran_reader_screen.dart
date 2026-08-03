@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class QuranReaderScreen extends StatefulWidget {
-  final Map<String, dynamic> surah;
+  final dynamic surah;
   final String type;
   final double initialScrollOffset;
 
@@ -227,9 +227,23 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindi
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final int surahIndex = widget.surah['index'];
-    final String surahName = widget.surah['name'] ?? '';
-    final List<dynamic> ayahs = widget.surah['ayahs'] ?? [];
+    
+    int surahIndex = 1;
+    String surahName = '';
+    List<dynamic> ayahs = [];
+    String errorDetails = '';
+
+    try {
+      if (widget.surah != null) {
+        surahIndex = widget.surah['index'] ?? 1;
+        surahName = widget.surah['name'] ?? '';
+        ayahs = widget.surah['ayahs'] ?? [];
+      } else {
+        errorDetails = 'بيانات السورة غير متوفرة (null)';
+      }
+    } catch (e) {
+      errorDetails = e.toString();
+    }
 
     // Build the clean list of styled verse widgets
     final List<Widget> versesList = List.generate(ayahs.length, (index) {
@@ -253,6 +267,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindi
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'UthmanicHafs',
+                fontFamilyFallback: const ['Cairo', 'Amiri', 'sans-serif'],
                 fontSize: 22,
                 height: 2.0,
                 fontWeight: FontWeight.w500,
@@ -301,9 +316,11 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindi
       appBar: AppBar(
         title: Text(
           'سورة $surahName (${widget.type} • ${ayahs.length} آية)',
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 13),
+          style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white),
         ),
         backgroundColor: const Color(0xFF0B4C35),
+        foregroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
         centerTitle: true,
         actions: [
@@ -326,7 +343,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindi
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Show Basmala centered at the top (except Surah Al-Tawbah)
-              if (surahIndex != 9) ...[
+              if (surahIndex != 9 && errorDetails.isEmpty && ayahs.isNotEmpty) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
@@ -334,6 +351,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindi
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'UthmanicHafs',
+                      fontFamilyFallback: const ['Cairo', 'Amiri', 'sans-serif'],
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFD4AF37),
@@ -343,14 +361,39 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindi
                 const SizedBox(height: 10),
               ],
               
-              // Flowing Quran Verses Text inside Column list
-              Directionality(
-                textDirection: TextDirection.rtl,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: versesList,
+              if (errorDetails.isNotEmpty || ayahs.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 100.0, horizontal: 24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline, color: Color(0xFFD4AF37), size: 48),
+                        const SizedBox(height: 16),
+                        Text(
+                          errorDetails.isNotEmpty
+                              ? 'خطأ في معالجة بيانات السورة:\n$errorDetails'
+                              : 'لم يتم العثور على آيات لهذه السورة. يرجى التحقق من قاعدة البيانات.',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.cairo(
+                            color: isDark ? Colors.white70 : const Color(0xFF0B4C35),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                // Flowing Quran Verses Text inside Column list
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: versesList,
+                  ),
                 ),
-              ),
               const SizedBox(height: 60),
             ],
           ),

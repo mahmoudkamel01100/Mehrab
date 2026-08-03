@@ -38,6 +38,11 @@
                             <span class="title"><i class="fa-regular fa-clock gold-text"></i> مواقيت الصلاة (الحوامدية)</span>
                             <span class="badge offline-badge">أوفلاين</span>
                         </div>
+                        <!-- Next Prayer Countdown Timer -->
+                        <div id="next-prayer-countdown-container" class="countdown-container" style="display: none;">
+                            <i class="fa-regular fa-hourglass-half"></i>
+                            <span id="next-prayer-countdown-text">--:--:--</span>
+                        </div>
                         <div class="prayer-grid">
                             <div class="prayer-card" id="prayer-fajr">
                                 <span class="name">الفجر</span>
@@ -382,6 +387,21 @@
             <div class="iframe-container">
                 <iframe id="youtube-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
+        </div>
+    </div>
+    
+    <!-- Adhan Popup Overlay -->
+    <div class="adhan-popup-overlay" id="adhan-popup-overlay">
+        <div class="adhan-popup-content">
+            <div class="adhan-bell-wrapper">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+            <h3>حان الآن موعد أذان</h3>
+            <h1 id="adhan-prayer-name">صلاة الفجر</h1>
+            <p>حسب التوقيت المحلي لمدينة الحوامدية وضواحيها</p>
+            <button class="btn-stop-adhan" onclick="stopWebAdhan()">
+                <i class="fa-solid fa-volume-xmark"></i> <span>إيقاف الأذان</span>
+            </button>
         </div>
     </div>
     

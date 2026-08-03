@@ -1482,6 +1482,35 @@ function triggerWebAdhanNotification(prayerName) {
     webAdhanAudio.play().catch(err => {
         console.log("Autoplay blocked by browser. Interaction required: ", err);
     });
+
+    // Pause any playing sermon / Quran audio in the web app
+    if (state.audio) {
+        state.audio.pause();
+        state.isPlaying = false;
+        const playBtn = document.getElementById('play-btn');
+        if (playBtn) playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+        const miniPlayBtn = document.getElementById('mini-play-btn');
+        if (miniPlayBtn) miniPlayBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    }
+
+    // Show the Web Adhan popup overlay
+    const overlay = document.getElementById('adhan-popup-overlay');
+    const nameEl = document.getElementById('adhan-prayer-name');
+    if (overlay && nameEl) {
+        nameEl.innerText = `صلاة ${prayerName}`;
+        overlay.classList.add('active');
+    }
+}
+
+function stopWebAdhan() {
+    if (webAdhanAudio) {
+        webAdhanAudio.pause();
+        webAdhanAudio = null;
+    }
+    const overlay = document.getElementById('adhan-popup-overlay');
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
 }
 
 function toggleWebNotifications(checked) {
