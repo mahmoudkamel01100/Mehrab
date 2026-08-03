@@ -203,67 +203,82 @@ class _QuranScreenState extends State<QuranScreen> {
                           itemCount: _filteredSurahs.length,
                           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 85),
                     itemBuilder: (context, index) {
-                      final surah = _filteredSurahs[index];
-                      final int surahIndex = surah['index'];
-                      final String surahName = surah['name'] ?? '';
-                      final int ayahsCount = (surah['ayahs'] as List).length;
+                      try {
+                        final surah = _filteredSurahs[index];
+                        final int surahIndex = surah['index'] ?? (index + 1);
+                        final String surahName = surah['name'] ?? '';
+                        final dynamic ayahsList = surah['ayahs'];
+                        final int ayahsCount = ayahsList is List ? ayahsList.length : 0;
+                        final String surahType = (surahIndex > 0 && surahIndex <= _surahTypes.length)
+                            ? _surahTypes[surahIndex - 1]
+                            : 'مكية';
 
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        color: isDark ? const Color(0xFF103A2B) : Colors.white,
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(
-                            color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
-                          ),
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          leading: CircleAvatar(
-                            backgroundColor: const Color(0xFF0B4C35).withOpacity(0.1),
-                            child: Text(
-                              surahIndex.toString(),
-                              style: GoogleFonts.cairo(
-                                color: const Color(0xFFD4AF37),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          color: isDark ? const Color(0xFF103A2B) : Colors.white,
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            side: BorderSide(
+                              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                             ),
                           ),
-                          title: Text(
-                            'سورة $surahName',
-                            style: GoogleFonts.cairo(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: isDark ? Colors.white : const Color(0xFF0B4C35),
-                            ),
-                          ),
-                          subtitle: Text(
-                            '${_surahTypes[surahIndex - 1]} • $ayahsCount آية',
-                            style: GoogleFonts.cairo(
-                              fontSize: 12,
-                              color: isDark ? Colors.white70 : const Color(0xFF5A7A6E),
-                            ),
-                          ),
-                          trailing: const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Color(0xFFD4AF37),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => QuranReaderScreen(
-                                  surah: surah,
-                                  type: _surahTypes[surahIndex - 1],
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            leading: CircleAvatar(
+                              backgroundColor: const Color(0xFF0B4C35).withOpacity(0.1),
+                              child: Text(
+                                surahIndex.toString(),
+                                style: GoogleFonts.cairo(
+                                  color: const Color(0xFFD4AF37),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      );
+                            ),
+                            title: Text(
+                              'سورة $surahName',
+                              style: GoogleFonts.cairo(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: isDark ? Colors.white : const Color(0xFF0B4C35),
+                              ),
+                            ),
+                            subtitle: Text(
+                              '$surahType • $ayahsCount آية',
+                              style: GoogleFonts.cairo(
+                                fontSize: 12,
+                                color: isDark ? Colors.white70 : const Color(0xFF5A7A6E),
+                              ),
+                            ),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: Color(0xFFD4AF37),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => QuranReaderScreen(
+                                    surah: surah,
+                                    type: surahType,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      } catch (e) {
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          color: Colors.red.withOpacity(0.05),
+                          child: ListTile(
+                            title: Text('خطأ في تحميل السورة', style: GoogleFonts.cairo(color: Colors.red)),
+                            subtitle: Text(e.toString(), style: GoogleFonts.cairo(fontSize: 10)),
+                          ),
+                        );
+                      }
                     },
                   ),
                 ),

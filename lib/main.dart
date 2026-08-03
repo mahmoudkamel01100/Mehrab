@@ -183,9 +183,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     };
 
     times.forEach((prayerName, prayerTime) {
-      final difference = now.difference(prayerTime);
-      // If now is within 5 minutes after prayerTime
-      if (difference.inSeconds >= 0 && difference.inMinutes < 5) {
+      final localPrayerTime = prayerTime.toLocal();
+      final difference = now.difference(localPrayerTime);
+      // Only trigger if current time is within 60 seconds of the actual local prayer time
+      if (difference.inSeconds >= 0 && difference.inSeconds <= 60) {
         final String lastTriggerKey = "last_triggered_adhan_$prayerName";
         final String? lastTriggeredDate = prefs.getString(lastTriggerKey);
         
@@ -205,9 +206,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       print("Could not pause AudioProvider: $e");
     }
 
-    // 2. Play the Adhan audio
+    // 2. Play the Adhan audio using the correct asset path 'images/adhan.mp3'
     try {
-      await _adhanPlayer?.setAsset('assets/images/adhan.mp3');
+      await _adhanPlayer?.setAsset('images/adhan.mp3');
       _adhanPlayer?.setLoopMode(LoopMode.off);
       _adhanPlayer?.play();
     } catch (e) {

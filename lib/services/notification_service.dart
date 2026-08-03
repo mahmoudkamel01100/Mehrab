@@ -47,7 +47,7 @@ class NotificationService {
             AndroidFlutterLocalNotificationsPlugin>();
     if (androidPlugin != null) {
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'prayer_times_channel',
+        'prayer_times_channel_v2',
         'مواقيت الصلاة والأذان',
         description: 'تنبيهات مواقيت الصلاة والأذان لمسجد الحوامدية',
         importance: Importance.max,
@@ -127,7 +127,7 @@ class NotificationService {
         // Adhan sound configuration. Looks for res/raw/adhan.mp3 on Android.
         // If missing, Android automatically falls back to default notification sound.
         final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-          'prayer_times_channel',
+          'prayer_times_channel_v2',
           'مواقيت الصلاة والأذن',
           channelDescription: 'تنبيهات مواقيت الصلاة والأذان لمسجد الحوامدية',
           importance: Importance.max,

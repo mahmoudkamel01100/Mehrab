@@ -246,64 +246,71 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindi
     }
 
     // Build the clean list of styled verse widgets
-    final List<Widget> versesList = List.generate(ayahs.length, (index) {
-      final ayah = ayahs[index];
-      String text = ayah['text'] ?? '';
-      final int num = ayah['num'] ?? (index + 1);
+    List<Widget> versesList = [];
+    try {
+      versesList = List.generate(ayahs.length, (index) {
+        final ayah = ayahs[index];
+        if (ayah == null) return const SizedBox();
+        String text = ayah['text'] ?? '';
+        final int num = ayah['num'] ?? (index + 1);
 
-      // Strip Basmala from the beginning of verse 1 for non-Fatiha surahs
-      if (surahIndex != 1 && num == 1) {
-        text = text.replaceFirst(RegExp(r'^بِسْمِ\s+اللَّهِ\s+الرَّحْمَٰنِ\s+الرَّحِيمِ\s*'), '');
-        text = text.replaceFirst(RegExp(r'^بِسْمِ\s+اللهِ\s+الرَّحٰمنِ\s+الرَّحِيْمِ\s*'), '');
-      }
+        // Strip Basmala from the beginning of verse 1 for non-Fatiha surahs
+        if (surahIndex != 1 && num == 1) {
+          text = text.replaceFirst(RegExp(r'^بِسْمِ\s+اللَّهِ\s+الرَّحْمَٰنِ\s+الرَّحِيمِ\s*'), '');
+          text = text.replaceFirst(RegExp(r'^بِسْمِ\s+اللهِ\s+الرَّحٰمنِ\s+الرَّحِيْمِ\s*'), '');
+        }
 
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'UthmanicHafs',
-                fontFamilyFallback: const ['Cairo', 'Amiri', 'sans-serif'],
-                fontSize: 22,
-                height: 2.0,
-                fontWeight: FontWeight.w500,
-                color: isDark ? Colors.white.withOpacity(0.95) : const Color(0xFF06261B),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD4AF37).withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3), width: 1),
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'UthmanicHafs',
+                  fontFamilyFallback: const ['Cairo', 'Amiri', 'sans-serif'],
+                  fontSize: 22,
+                  height: 2.0,
+                  fontWeight: FontWeight.w500,
+                  color: isDark ? Colors.white.withOpacity(0.95) : const Color(0xFF06261B),
                 ),
-                child: Text(
-                  'آية $num',
-                  style: GoogleFonts.cairo(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFFD4AF37),
+              ),
+              const SizedBox(height: 6),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD4AF37).withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3), width: 1),
+                  ),
+                  child: Text(
+                    'آية $num',
+                    style: GoogleFonts.cairo(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFFD4AF37),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Divider(
-              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.04),
-              thickness: 1,
-              indent: 40,
-              endIndent: 40,
-            ),
-          ],
-        ),
-      );
-    });
+              const SizedBox(height: 8),
+              Divider(
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.04),
+                thickness: 1,
+                indent: 40,
+                endIndent: 40,
+              ),
+            ],
+          ),
+        );
+      });
+    } catch (e) {
+      errorDetails = "خطأ في توليد الآيات: $e";
+      print(errorDetails);
+    }
 
     return PopScope(
       canPop: true,
