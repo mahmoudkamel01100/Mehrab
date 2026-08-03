@@ -7,13 +7,18 @@ class PrayerTimesService {
 
   /// Calculates prayer times offline for Al-Hawamdeya based on current date
   static PrayerTimes calculatePrayerTimes() {
+    return calculatePrayerTimesFor(DateTime.now());
+  }
+
+  /// Calculates prayer times offline for Al-Hawamdeya based on a specific date
+  static PrayerTimes calculatePrayerTimesFor(DateTime date) {
     final coordinates = Coordinates(_latitude, _longitude);
     
     // Egyptian General Authority of Survey parameters
     final params = CalculationMethod.egyptian.getParameters();
     params.madhab = Madhab.shafi; // Standard Shafi'i madhab for Egypt (affects Asr)
 
-    final dateComponents = DateComponents.from(DateTime.now());
+    final dateComponents = DateComponents.from(date);
     final prayerTimes = PrayerTimes(coordinates, dateComponents, params);
     
     return prayerTimes;

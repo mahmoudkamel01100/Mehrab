@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 // Services
 import '../services/audio_handler.dart';
@@ -101,10 +102,19 @@ class AudioPlayerScreen extends StatelessWidget {
                       // Track Details
                       Column(
                         children: [
-                          Text(
-                            provider.currentTrackName!,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              provider.currentTrackName!,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
@@ -213,7 +223,15 @@ class AudioPlayerScreen extends StatelessWidget {
                             icon: const Icon(Icons.share, color: Colors.white60),
                             iconSize: 22,
                             onPressed: () {
-                              // Share logic (in production could use share_plus package)
+                              final String trackName = provider.currentTrackName ?? '';
+                              final String reciterName = provider.currentReciterName ?? '';
+                              final String url = provider.currentUrl ?? '';
+                              if (url.isNotEmpty) {
+                                Share.share(
+                                  'استمع إلى "$trackName" بصوت $reciterName عبر تطبيق محراب الحوامدية:\n$url',
+                                  subject: 'مشاركة تلاوة/خطبة',
+                                );
+                              }
                             },
                           ),
                         ],

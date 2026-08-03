@@ -19,7 +19,7 @@ class QuranReaderScreen extends StatefulWidget {
   State<QuranReaderScreen> createState() => _QuranReaderScreenState();
 }
 
-class _QuranReaderScreenState extends State<QuranReaderScreen> {
+class _QuranReaderScreenState extends State<QuranReaderScreen> with WidgetsBindingObserver {
   final ScrollController _scrollController = ScrollController();
   Timer? _scrollTimer;
   bool _isScrolling = false;
@@ -32,15 +32,25 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _checkBookmarkStatus();
     if (widget.initialScrollOffset > 0.0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.jumpTo(widget.initialScrollOffset);
-        }
+        Future.delayed(const Duration(milliseconds: 150), () {
+          if (mounted && _scrollController.hasClients) {
+            _scrollController.jumpTo(widget.initialScrollOffset);
+          }
+        });
       });
     }
     _scrollController.addListener(_handleScroll);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _saveBookmarkSilent();
+    }
   }
 
   void _handleScroll() {
@@ -158,6 +168,7 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _saveDebounce?.cancel();
     _scrollTimer?.cancel();
     _scrollController.removeListener(_handleScroll);
@@ -220,13 +231,11 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
     final String surahName = widget.surah['name'] ?? '';
     final List<dynamic> ayahs = widget.surah['ayahs'] ?? [];
 
-    // Build the TextSpans flow
-    final List<InlineSpan> spans = [];
-    
-    for (var i = 0; i < ayahs.length; i++) {
-      final ayah = ayahs[i];
+    // Build the clean list of styled verse widgets
+    final List<Widget> versesList = List.generate(ayahs.length, (index) {
+      final ayah = ayahs[index];
       String text = ayah['text'] ?? '';
-      final int num = ayah['num'] ?? (i + 1);
+      final int num = ayah['num'] ?? (index + 1);
 
       // Strip Basmala from the beginning of verse 1 for non-Fatiha surahs
       if (surahIndex != 1 && num == 1) {
@@ -234,45 +243,52 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
         text = text.replaceFirst(RegExp(r'^بِسْمِ\s+اللهِ\s+الرَّحٰمنِ\s+الرَّحِيْمِ\s*'), '');
       }
 
-      spans.add(
-        TextSpan(
-          text: text,
-          style: TextStyle(
-            fontFamily: 'UthmanicHafs',
-            fontSize: 24, // Increased from 20 to 24 for grand readability!
-            height: 2.5,  // Spaced line-height
-            fontWeight: FontWeight.w500,
-            color: isDark ? Colors.white.withOpacity(0.95) : const Color(0xFF06261B),
-          ),
-        ),
-      );
-
-      // Ayah Number Badge
-      spans.add(
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            width: 26,
-            height: 26,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFD4AF37), width: 1.2),
-              color: const Color(0xFFD4AF37).withOpacity(0.08),
-            ),
-            child: Text(
-              num.toString(),
-              style: GoogleFonts.cairo(
-                fontSize: 8.5,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFFD4AF37),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'UthmanicHafs',
+                fontSize: 22,
+                height: 2.0,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white.withOpacity(0.95) : const Color(0xFF06261B),
               ),
             ),
-          ),
+            const SizedBox(height: 6),
+            Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD4AF37).withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFD4AF37).withOpacity(0.3), width: 1),
+                ),
+                child: Text(
+                  'آية $num',
+                  style: GoogleFonts.cairo(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFD4AF37),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Divider(
+              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.04),
+              thickness: 1,
+              indent: 40,
+              endIndent: 40,
+            ),
+          ],
         ),
       );
-    }
+    });
 
     return PopScope(
       canPop: true,
@@ -327,14 +343,12 @@ class _QuranReaderScreenState extends State<QuranReaderScreen> {
                 const SizedBox(height: 10),
               ],
               
-              // Flowing Quran Verses Text
+              // Flowing Quran Verses Text inside Column list
               Directionality(
                 textDirection: TextDirection.rtl,
-                child: RichText(
-                  textAlign: TextAlign.center, // Centered text flow
-                  text: TextSpan(
-                    children: spans,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: versesList,
                 ),
               ),
               const SizedBox(height: 60),

@@ -201,7 +201,7 @@ class _QuranScreenState extends State<QuranScreen> {
                         )
                       : ListView.builder(
                           itemCount: _filteredSurahs.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 85),
                     itemBuilder: (context, index) {
                       final surah = _filteredSurahs[index];
                       final int surahIndex = surah['index'];

@@ -47,6 +47,11 @@ class MehrabApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: const Color(0xFF0B4C35),
         scaffoldBackgroundColor: const Color(0xFFF4F7F5),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF0B4C35),
+          foregroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
         colorScheme: const ColorScheme.light(
           primary: Color(0xFF0B4C35),
           secondary: Color(0xFFD4AF37), // Gold
@@ -64,6 +69,11 @@ class MehrabApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: const Color(0xFF0B4C35),
         scaffoldBackgroundColor: const Color(0xFF072A1E),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF0B4C35),
+          foregroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFF0B4C35),
           secondary: Color(0xFFD4AF37), // Gold

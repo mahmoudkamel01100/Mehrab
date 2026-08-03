@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 6),
             const Text(
               'مِحرَاب الحَوامدية',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
             ),
           ],
         ),
@@ -79,11 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     _hijriDate,
-                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                   Text(
                     _gregorianDate,
-                    style: const TextStyle(fontSize: 8, color: Color(0xFFA3C8BC)),
+                    style: const TextStyle(fontSize: 8, color: Colors.white70),
                   ),
                 ],
               ),
@@ -409,54 +409,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _updateCountdown() {
     final now = DateTime.now();
-    final prayerTimes = PrayerTimesService.calculatePrayerTimes();
-    final nextPrayer = prayerTimes.nextPrayer();
-    
-    if (nextPrayer == Prayer.none) {
-      if (mounted) {
-        setState(() {
-          _nextPrayerCountdown = '';
-          _nextPrayerName = '';
-        });
-      }
-      return;
-    }
+    final todayTimes = PrayerTimesService.calculatePrayerTimesFor(now);
+    final tomorrow = now.add(const Duration(days: 1));
+    final tomorrowTimes = PrayerTimesService.calculatePrayerTimesFor(tomorrow);
     
     DateTime nextPrayerTime;
     String prayerNameAr = '';
     
-    switch (nextPrayer) {
-      case Prayer.fajr:
-        nextPrayerTime = prayerTimes.fajr;
-        prayerNameAr = 'الفجر';
-        break;
-      case Prayer.sunrise:
-        nextPrayerTime = prayerTimes.sunrise;
-        prayerNameAr = 'الشروق';
-        break;
-      case Prayer.dhuhr:
-        nextPrayerTime = prayerTimes.dhuhr;
-        prayerNameAr = 'الظهر';
-        break;
-      case Prayer.asr:
-        nextPrayerTime = prayerTimes.asr;
-        prayerNameAr = 'العصر';
-        break;
-      case Prayer.maghrib:
-        nextPrayerTime = prayerTimes.maghrib;
-        prayerNameAr = 'المغرب';
-        break;
-      case Prayer.isha:
-        nextPrayerTime = prayerTimes.isha;
-        prayerNameAr = 'العشاء';
-        break;
-      default:
-        nextPrayerTime = now;
-    }
-    
-    // Ensure if calculated time is slightly behind 'now' due to millisecond delays, it handles it safely
-    if (nextPrayerTime.isBefore(now)) {
-      nextPrayerTime = nextPrayerTime.add(const Duration(days: 1));
+    if (now.isBefore(todayTimes.fajr)) {
+      nextPrayerTime = todayTimes.fajr;
+      prayerNameAr = 'الفجر';
+    } else if (now.isBefore(todayTimes.sunrise)) {
+      nextPrayerTime = todayTimes.sunrise;
+      prayerNameAr = 'الشروق';
+    } else if (now.isBefore(todayTimes.dhuhr)) {
+      nextPrayerTime = todayTimes.dhuhr;
+      prayerNameAr = 'الظهر';
+    } else if (now.isBefore(todayTimes.asr)) {
+      nextPrayerTime = todayTimes.asr;
+      prayerNameAr = 'العصر';
+    } else if (now.isBefore(todayTimes.maghrib)) {
+      nextPrayerTime = todayTimes.maghrib;
+      prayerNameAr = 'المغرب';
+    } else if (now.isBefore(todayTimes.isha)) {
+      nextPrayerTime = todayTimes.isha;
+      prayerNameAr = 'العشاء';
+    } else {
+      nextPrayerTime = tomorrowTimes.fajr;
+      prayerNameAr = 'الفجر';
     }
     
     final difference = nextPrayerTime.difference(now);
@@ -469,7 +449,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _nextPrayerName = prayerNameAr;
         _nextPrayerCountdown = '$hours:$minutes:$seconds';
-        _prayerTimes = prayerTimes;
+        _prayerTimes = todayTimes;
       });
     }
   }

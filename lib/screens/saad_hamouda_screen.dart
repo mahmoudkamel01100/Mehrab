@@ -108,8 +108,8 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
 
   Widget _buildCategoriesGrid() {
     return ListView(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 85.0),
       children: [
-        const SizedBox(height: 12),
         _buildCategoryCard(
           'دروس النحو',
           'شرح كتاب قواعد اللغة العربية والنحو بالتفصيل',
@@ -217,16 +217,37 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.08)),
+            border: Border.all(
+              color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
+            ),
+            boxShadow: isDark
+                ? null
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    )
+                  ],
           ),
           child: TextField(
-            style: GoogleFonts.cairo(color: Colors.white, fontSize: 13),
+            style: GoogleFonts.cairo(
+              color: isDark ? Colors.white : const Color(0xFF0B4C35),
+              fontSize: 13,
+            ),
             decoration: InputDecoration(
-              icon: const Icon(Icons.search, color: Colors.white30, size: 22),
+              icon: Icon(
+                Icons.search,
+                color: isDark ? Colors.white30 : const Color(0xFF5A7A6E),
+                size: 22,
+              ),
               hintText: 'ابحث في هذا القسم...',
-              hintStyle: GoogleFonts.cairo(color: Colors.white30, fontSize: 13),
+              hintStyle: GoogleFonts.cairo(
+                color: isDark ? Colors.white30 : const Color(0xFF8A9A93),
+                fontSize: 13,
+              ),
               border: InputBorder.none,
             ),
             onChanged: (val) {
@@ -248,7 +269,7 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 80), // spacer for mini player
+                  padding: const EdgeInsets.only(bottom: 85), // spacer for mini player
                   itemCount: filteredItems.length,
                   itemBuilder: (context, index) {
                     final item = filteredItems[index];

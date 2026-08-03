@@ -136,7 +136,7 @@ class _RecitersScreenState extends State<RecitersScreen> {
               // Reciters Grid View
               Expanded(
                 child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 85.0),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
@@ -203,6 +203,7 @@ class _RecitersScreenState extends State<RecitersScreen> {
 
   Widget _buildTabButton(String category, String label) {
     final bool isActive = _activeCategory == category;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -212,13 +213,23 @@ class _RecitersScreenState extends State<RecitersScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF166E4F) : Colors.white.withOpacity(0.05),
+          color: isActive 
+              ? (isDark ? const Color(0xFF166E4F) : const Color(0xFF0B4C35)) 
+              : (isDark ? Colors.white.withOpacity(0.05) : Colors.white),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isActive ? const Color(0xFF166E4F) : Colors.white.withOpacity(0.08),
+            color: isActive 
+                ? (isDark ? const Color(0xFF166E4F) : const Color(0xFF0B4C35)) 
+                : (isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06)),
           ),
           boxShadow: isActive
-              ? [BoxShadow(color: const Color(0xFF166E4F).withOpacity(0.4), blurRadius: 10, spreadRadius: 1)]
+              ? [
+                  BoxShadow(
+                    color: (isDark ? const Color(0xFF166E4F) : const Color(0xFF0B4C35)).withOpacity(0.3),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  )
+                ]
               : null,
         ),
         child: Text(
@@ -226,7 +237,9 @@ class _RecitersScreenState extends State<RecitersScreen> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: isActive ? Colors.white : const Color(0xFFA3C8BC),
+            color: isActive 
+                ? Colors.white 
+                : (isDark ? const Color(0xFFA3C8BC) : const Color(0xFF5A7A6E)),
           ),
         ),
       ),
@@ -243,11 +256,14 @@ class _RecitersScreenState extends State<RecitersScreen> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF093B2A),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF093B2A)
+          : const Color(0xFFF4F7F5),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       builder: (context) {
+        final bool isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -259,15 +275,19 @@ class _RecitersScreenState extends State<RecitersScreen> {
                 children: [
                   Text(
                     reciter['name']!,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFFD4AF37)),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: isDark ? const Color(0xFFD4AF37) : const Color(0xFF0B4C35),
+                    ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: isDark ? Colors.white : const Color(0xFF0B4C35)),
                     onPressed: () => Navigator.pop(context),
                   )
                 ],
               ),
-              const Divider(color: Colors.white10),
+              Divider(color: isDark ? Colors.white10 : Colors.black12),
               
               // Track lists
               Expanded(
@@ -285,7 +305,14 @@ class _RecitersScreenState extends State<RecitersScreen> {
                           style: const TextStyle(color: Color(0xFFD4AF37), fontSize: 11, fontWeight: FontWeight.bold),
                         ),
                       ),
-                      title: Text(item['name']!, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      title: Text(
+                        item['name']!,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isDark ? Colors.white : const Color(0xFF072A1E),
+                        ),
+                      ),
                       trailing: const Icon(Icons.play_circle_fill, color: Color(0xFFD4AF37), size: 24),
                       onTap: () {
                         // Dismiss bottom sheet
@@ -337,12 +364,15 @@ class _RecitersScreenState extends State<RecitersScreen> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF093B2A),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF093B2A)
+          : const Color(0xFFF4F7F5),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       builder: (context) {
+        final bool isDark = Theme.of(context).brightness == Brightness.dark;
         return StatefulBuilder(
           builder: (context, setSheetState) {
             return Container(
@@ -356,7 +386,7 @@ class _RecitersScreenState extends State<RecitersScreen> {
                     children: [
                       if (activeTab != null)
                         IconButton(
-                          icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+                          icon: Icon(Icons.arrow_back_ios, color: isDark ? Colors.white : const Color(0xFF0B4C35), size: 20),
                           onPressed: () {
                             setSheetState(() {
                               activeTab = null;
@@ -463,15 +493,37 @@ class _RecitersScreenState extends State<RecitersScreen> {
                         margin: const EdgeInsets.only(bottom: 12),
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
+                          color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06),
+                          ),
+                          boxShadow: isDark
+                              ? null
+                              : [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.02),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  )
+                                ],
                         ),
                         child: TextField(
-                          style: const TextStyle(color: Colors.white, fontSize: 13),
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.search, color: Colors.white30, size: 20),
+                          style: TextStyle(
+                            color: isDark ? Colors.white : const Color(0xFF0B4C35),
+                            fontSize: 13,
+                          ),
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.search,
+                              color: isDark ? Colors.white30 : const Color(0xFF5A7A6E),
+                              size: 20,
+                            ),
                             hintText: 'ابحث في هذا القسم...',
-                            hintStyle: TextStyle(color: Colors.white30, fontSize: 13),
+                            hintStyle: TextStyle(
+                              color: isDark ? Colors.white30 : const Color(0xFF8A9A93),
+                              fontSize: 13,
+                            ),
                             border: InputBorder.none,
                           ),
                           onChanged: (val) {
@@ -514,7 +566,11 @@ class _RecitersScreenState extends State<RecitersScreen> {
                               ),
                               title: Text(
                                 title,
-                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: isDark ? Colors.white : const Color(0xFF072A1E),
+                                ),
                               ),
                               trailing: Icon(
                                 isVideo ? Icons.open_in_new : Icons.play_circle_fill,
