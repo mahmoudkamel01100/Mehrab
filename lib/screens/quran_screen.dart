@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart' show rootBundle;
+
 import 'quran_reader_screen.dart';
+import '../services/quran_text_data.dart';
 
 class QuranScreen extends StatefulWidget {
   const QuranScreen({super.key});
@@ -78,23 +79,13 @@ class _QuranScreenState extends State<QuranScreen> {
     ).then((_) => _loadLastRead()); // Reload when returning to refresh card
   }
 
-  Future<void> _loadQuranText() async {
-    try {
-      final String jsonStr = await rootBundle.loadString('images/quran_text.json', cache: false);
-      final List<dynamic> data = json.decode(jsonStr);
-      setState(() {
-        _allSurahs = data;
-        _filteredSurahs = data;
-        _isLoading = false;
-        _errorMessage = null;
-      });
-    } catch (e) {
-      print('Error loading Quran text: $e');
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
-    }
+  void _loadQuranText() {
+    setState(() {
+      _allSurahs = quranTextData;
+      _filteredSurahs = quranTextData;
+      _isLoading = false;
+      _errorMessage = null;
+    });
   }
 
   void _filterSurahs(String query) {

@@ -35,6 +35,7 @@ dependencies:
   # Local Cache (for Electronic Rosary / Tasbih counts)
   shared_preferences: ^2.2.0
   share_plus: ^7.2.1
+  permission_handler: ^11.3.1
 
   # Local Notification and Background Service
   flutter_local_notifications: ^17.0.0

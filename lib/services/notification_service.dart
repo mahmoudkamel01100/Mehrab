@@ -4,6 +4,7 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adhan/adhan.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotifications =
@@ -59,14 +60,23 @@ class NotificationService {
   }
   
   static Future<bool> requestPermissions() async {
-    // Request Android POST_NOTIFICATIONS permission (Android 13+)
-    final androidPlugin = _localNotifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-    if (androidPlugin != null) {
-      await androidPlugin.requestNotificationsPermission();
+    // 1. Request POST_NOTIFICATIONS (Android 13+)
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
     }
-    
+
+    // 2. Request SCHEDULE_EXACT_ALARM (Android 12+)
+    // This is required to make the notification fire exactly at the prayer time.
+    if (await Permission.scheduleExactAlarm.isDenied) {
+      await Permission.scheduleExactAlarm.request();
+    }
+
+    // 3. Request IGNORE_BATTERY_OPTIMIZATIONS
+    // This is required to prevent the OS from killing the background notifications when the app is closed.
+    if (await Permission.ignoreBatteryOptimizations.isDenied) {
+      await Permission.ignoreBatteryOptimizations.request();
+    }
+
     // Request iOS permission
     final iosPlugin = _localNotifications
         .resolvePlatformSpecificImplementation<
