@@ -195,6 +195,7 @@ class _SaadHamoudaScreenState extends State<SaadHamoudaScreen> {
   }
 
   Widget _buildItemsList() {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(
