@@ -40,6 +40,22 @@ class NotificationService {
         // Handle notification click if needed
       },
     );
+
+    // Create the custom notification channel on Android for custom sound
+    final androidPlugin = _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin != null) {
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'prayer_times_channel',
+        'مواقيت الصلاة والأذان',
+        description: 'تنبيهات مواقيت الصلاة والأذان لمسجد الحوامدية',
+        importance: Importance.max,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('adhan'),
+      );
+      await androidPlugin.createNotificationChannel(channel);
+    }
   }
   
   static Future<bool> requestPermissions() async {
@@ -70,7 +86,7 @@ class NotificationService {
     await cancelAllNotifications();
     
     final prefs = await SharedPreferences.getInstance();
-    final bool isEnabled = prefs.getBool('prayer_notifications_enabled') ?? false;
+    final bool isEnabled = prefs.getBool('prayer_notifications_enabled') ?? true;
     if (!isEnabled) return;
     
     // 5 daily prayers

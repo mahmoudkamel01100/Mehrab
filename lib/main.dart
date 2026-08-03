@@ -20,6 +20,8 @@ import 'services/notification_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.init();
+  // Request notifications permission on app startup so notifications can function immediately
+  await NotificationService.requestPermissions();
   NotificationService.schedulePrayerNotifications();
   AirtableService.fetchAirtableRecords();
   runApp(

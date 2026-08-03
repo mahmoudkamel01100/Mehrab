@@ -230,12 +230,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set initial checkbox state for Adhan notifications
     const webNotifSwitch = document.getElementById('web-notifications-switch');
     if (webNotifSwitch) {
-        const isEnabled = localStorage.getItem('webAdhanNotificationsEnabled') === 'true';
+        const isEnabled = localStorage.getItem('webAdhanNotificationsEnabled') !== 'false';
         webNotifSwitch.checked = isEnabled;
+        
+        // Automatically request permission on page load if not set yet
+        if (isEnabled && 'Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
     }
 
     // Setup background prayer check for web notifications (run every 30 seconds)
     setInterval(checkPrayerTimesForNotifications, 30000);
+    
+    // Setup countdown timer (run every second)
+    startPrayerCountdown();
 });
 
 // Update Header Hijri and Gregorian Dates
@@ -256,6 +264,135 @@ function updateDateDisplay() {
     } catch(e) {
         document.getElementById('hijri-date-header').innerText = "التاريخ الهجري غير متاح";
     }
+}
+
+// Next Prayer Countdown Timer logic
+function decimalHourToDate(decimalHour, date) {
+    const result = new Date(date);
+    const hours = Math.floor(decimalHour);
+    const minutes = Math.floor((decimalHour - hours) * 60);
+    const seconds = Math.floor(((decimalHour - hours) * 60 - minutes) * 60);
+    result.setHours(hours, minutes, seconds, 0);
+    return result;
+}
+
+function getTodayPrayerTimes(date) {
+    const lat = 29.8967;
+    const lng = 31.2631;
+    const timezone = -date.getTimezoneOffset() / 60; 
+
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    
+    let a = Math.floor((14 - month) / 12);
+    let y = year + 4800 - a;
+    let m = month + 12 * a - 3;
+    let jd = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+
+    let d = jd - 2451545.0;
+    let g = (357.529 + 0.98560028 * d) % 360;
+    let q = (280.459 + 0.98564736 * d) % 360;
+    let L = (q + 1.915 * Math.sin(rad(g)) + 0.020 * Math.sin(rad(2 * g))) % 360;
+    
+    let e = 23.439 - 0.00000036 * d;
+    
+    let DD = deg(Math.asin(Math.sin(rad(e)) * Math.sin(rad(L))));
+    let RA = deg(Math.atan2(Math.cos(rad(e)) * Math.sin(rad(L)), Math.cos(rad(L)))) / 15;
+    RA = (RA + 24) % 24;
+    
+    let EqT = q/15 - RA;
+
+    let noon = (12 + timezone - lng / 15 - EqT + 24) % 24;
+    let U_sunrise = solarAngle(lat, DD, -0.833);
+    let sunrise = noon - U_sunrise / 15;
+    let sunset = noon + U_sunrise / 15;
+    let U_fajr = solarAngle(lat, DD, -19.5);
+    let fajr = noon - U_fajr / 15;
+    let U_isha = solarAngle(lat, DD, -17.5);
+    let isha = noon + U_isha / 15;
+    let g_asr = deg(Math.atan(1 + Math.tan(rad(Math.abs(lat - DD)))));
+    let U_asr = solarAngle(lat, DD, 90 - g_asr);
+    let asr = noon + U_asr / 15;
+
+    return {
+        fajr: decimalHourToDate(fajr, date),
+        sunrise: decimalHourToDate(sunrise, date),
+        dhuhr: decimalHourToDate(noon, date),
+        asr: decimalHourToDate(asr, date),
+        maghrib: decimalHourToDate(sunset, date),
+        isha: decimalHourToDate(isha, date)
+    };
+}
+
+function updatePrayerCountdown() {
+    const now = new Date();
+    const todayTimes = getTodayPrayerTimes(now);
+    
+    let nextPrayerName = '';
+    let nextPrayerTime = null;
+    
+    if (now < todayTimes.fajr) {
+        nextPrayerName = 'الفجر';
+        nextPrayerTime = todayTimes.fajr;
+    } else if (now < todayTimes.sunrise) {
+        nextPrayerName = 'الشروق';
+        nextPrayerTime = todayTimes.sunrise;
+    } else if (now < todayTimes.dhuhr) {
+        nextPrayerName = 'الظهر';
+        nextPrayerTime = todayTimes.dhuhr;
+    } else if (now < todayTimes.asr) {
+        nextPrayerName = 'العصر';
+        nextPrayerTime = todayTimes.asr;
+    } else if (now < todayTimes.maghrib) {
+        nextPrayerName = 'المغرب';
+        nextPrayerTime = todayTimes.maghrib;
+    } else if (now < todayTimes.isha) {
+        nextPrayerName = 'العشاء';
+        nextPrayerTime = todayTimes.isha;
+    } else {
+        nextPrayerName = 'الفجر';
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowTimes = getTodayPrayerTimes(tomorrow);
+        nextPrayerTime = tomorrowTimes.fajr;
+    }
+    
+    const container = document.getElementById('next-prayer-countdown-container');
+    const textEl = document.getElementById('next-prayer-countdown-text');
+    
+    if (container && textEl) {
+        if (nextPrayerTime) {
+            const diffMs = nextPrayerTime - now;
+            if (diffMs > 0) {
+                const totalSeconds = Math.floor(diffMs / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                
+                const hoursStr = String(hours).padStart(2, '0');
+                const minutesStr = String(minutes).padStart(2, '0');
+                const secondsStr = String(seconds).padStart(2, '0');
+                
+                textEl.innerText = `متبقي على أذان ${nextPrayerName}: ${hoursStr}:${minutesStr}:${secondsStr}`;
+                container.style.display = 'flex';
+            } else {
+                container.style.display = 'none';
+            }
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    // Call highlighting to make sure active card switches dynamically in real-time
+    if (now.getSeconds() === 0 || now.getSeconds() === 30) {
+        calculatePrayerTimes();
+    }
+}
+
+function startPrayerCountdown() {
+    updatePrayerCountdown();
+    setInterval(updatePrayerCountdown, 1000);
 }
 
 /* 
@@ -1263,7 +1400,7 @@ let lastTriggeredPrayerDate = '';
 let lastTriggeredPrayerName = '';
 
 function checkPrayerTimesForNotifications() {
-    const isEnabled = localStorage.getItem('webAdhanNotificationsEnabled') === 'true';
+    const isEnabled = localStorage.getItem('webAdhanNotificationsEnabled') !== 'false';
     if (!isEnabled) return;
 
     const date = new Date();
@@ -1341,7 +1478,7 @@ function triggerWebAdhanNotification(prayerName) {
         webAdhanAudio = null;
     }
 
-    webAdhanAudio = new Audio('https://www.islamcan.com/audio/adhan/makkah.mp3');
+    webAdhanAudio = new Audio('adhan.mp3');
     webAdhanAudio.play().catch(err => {
         console.log("Autoplay blocked by browser. Interaction required: ", err);
     });
