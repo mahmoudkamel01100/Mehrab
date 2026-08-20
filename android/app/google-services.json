@@ -1,0 +1,29 @@
+﻿{
+  "project_info": {
+    "project_number": "546868400013",
+    "project_id": "mehrab-5f85d",
+    "storage_bucket": "mehrab-5f85d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546868400013:android:95bc060823fe1694aa77c4",
+        "android_client_info": {
+          "package_name": "com.mehrab.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBg2TWsmI7YpqVA09F5No3fdD7CohXvQJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
